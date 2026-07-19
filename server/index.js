@@ -10,6 +10,9 @@ dotenv.config({ path: path.join(serverDirectory, '.env') })
 const app = express()
 const PORT = process.env.PORT || 5000
 const requestLog = new Map()
+const counterNamespace = process.env.COUNTER_NAMESPACE || 'ali-jalal-portfolio'
+const counterName = 'visitors'
+const counterBaseUrl = `https://api.counterapi.dev/v1/${encodeURIComponent(counterNamespace)}/${counterName}`
 
 app.use(express.json({ limit: '20kb' }))
 app.use(express.static(path.join(process.cwd(), 'dist')))
@@ -38,6 +41,33 @@ function validateContact({ name, email, phone, message }) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return false
   return /^\+?[0-9\s-]{7,15}$/.test(phone.trim())
 }
+
+async function getVisitorCount(increment = false) {
+  const response = await fetch(`${counterBaseUrl}${increment ? '/up' : ''}`)
+  if (!response.ok) throw new Error(`Counter service returned ${response.status}`)
+  const data = await response.json()
+  const count = Number(data.count ?? data.data ?? data.value)
+  if (!Number.isFinite(count)) throw new Error('Counter service returned an invalid count')
+  return count
+}
+
+app.get('/api/visitors', async (req, res) => {
+  try {
+    return res.json({ count: await getVisitorCount() })
+  } catch (error) {
+    console.error('Error reading visitor count:', error)
+    return res.status(503).json({ error: 'Visitor counter is temporarily unavailable.' })
+  }
+})
+
+app.post('/api/visitors', async (req, res) => {
+  try {
+    return res.json({ count: await getVisitorCount(true) })
+  } catch (error) {
+    console.error('Error updating visitor count:', error)
+    return res.status(503).json({ error: 'Visitor counter is temporarily unavailable.' })
+  }
+})
 
 app.post('/api/contact', async (req, res) => {
   const ip = req.ip || req.socket.remoteAddress || 'unknown'
