@@ -6,7 +6,7 @@ import Maintenance from './maintenance/maintenance.jsx'
 import LoadingScreen from './components/loading-screen/loading-screen.jsx'
 import { useLanguage } from './i18n/language-context.jsx'
 
-const isMaintenanceMode = true;
+const isMaintenanceMode = false;
 
 function App() {
   const { t } = useLanguage()
