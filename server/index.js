@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
-
+import cors from 'cors'
 const serverDirectory = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(serverDirectory, '.env') })
 
@@ -16,7 +16,11 @@ const counterBaseUrl = `https://api.counterapi.dev/v1/${encodeURIComponent(count
 
 app.use(express.json({ limit: '20kb' }))
 app.use(express.static(path.join(process.cwd(), 'dist')))
-
+const allowedOrigins = ['https://ali-jalal.com', 'https://www.ali-jalal.com', 'http://localhost:3000','https://portfolio-updated-3vas.onrender.com'];
+app.use(cors({ origin: (origin, callback) => {
+  if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
+  return callback(new Error('CORS policy: This origin is not allowed.'))
+}}));
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: Number(process.env.SMTP_PORT) || 587,
