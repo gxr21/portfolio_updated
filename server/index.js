@@ -108,7 +108,7 @@ app.post('/api/contact', async (req, res) => {
 ${message.trim()}
 ---------------------------
     `.trim()
-
+    await transporter.verify()
     await transporter.sendMail({
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: process.env.CONTACT_EMAIL || process.env.SMTP_USER,
@@ -129,7 +129,14 @@ ${message.trim()}
       padding:15px;border-radius:8px;
       white-space:pre-wrap">${escapeHtml(message)}</p></div>`,
     })
-
+    console.log({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  user: process.env.SMTP_USER,
+  from: process.env.SMTP_FROM,
+  to: process.env.CONTACT_EMAIL,
+  passExists: !!process.env.SMTP_PASS,
+});
     return res.json({ success: true })
   } catch (error) {
     console.error('Error sending email:', error)
