@@ -69,8 +69,8 @@ function ContactForm() {
       
       setStatus('success')
       setForm(initialForm)
-    } catch {
-      setStatus('error')
+    } catch (error) {
+      setStatus(error.stringifyJson('error'))
     } finally {
       setIsSubmitting(false)
     }
