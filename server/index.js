@@ -9,6 +9,7 @@ const serverDirectory = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(serverDirectory, '.env') })
 dns.setDefaultResultOrder('ipv4first')
 const app = express()
+app.set('trust proxy', 1)
 const PORT = process.env.PORT || 5000
 const requestLog = new Map()
 const counterNamespace = process.env.COUNTER_NAMESPACE || 'ali-jalal-portfolio'
@@ -28,9 +29,9 @@ const transporter = nodemailer.createTransport({
   secure: true,
   auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
   family: 4,
-  connectionTimeOut: 10000,
-  greetingTimeoutOut: 10000,
-  socketTimeOut: 10000,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
 })
 
 function escapeHtml(value) {
