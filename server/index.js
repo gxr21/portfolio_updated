@@ -4,9 +4,10 @@ import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
+import dns from 'dns'
 const serverDirectory = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(serverDirectory, '.env') })
-
+dns.setDefaultResultOrder('ipv4first')
 const app = express()
 const PORT = process.env.PORT || 5000
 const requestLog = new Map()
@@ -26,6 +27,7 @@ const transporter = nodemailer.createTransport({
   port: Number(process.env.SMTP_PORT) || 587,
   secure: Number(process.env.SMTP_PORT) === 465,
   auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  family: 4,
 })
 
 function escapeHtml(value) {
