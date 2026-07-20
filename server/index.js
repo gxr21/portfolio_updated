@@ -35,7 +35,7 @@ function escapeHtml(value) {
 }
 
 function isRateLimited(ip) {
-  const now = Date.now(); const windowMs = 15 * 60 * 1000; const maxRequests = 5
+  const now = Date.now(); const windowMs = 15 * 60 * 1000; const maxRequests = 10
   const requests = (requestLog.get(ip) || []).filter((time) => now - time < windowMs)
   requests.push(now); requestLog.set(ip, requests)
   return requests.length > maxRequests
