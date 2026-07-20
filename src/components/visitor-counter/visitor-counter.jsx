@@ -12,7 +12,8 @@ function VisitorCounter() {
     const recordVisit = !localStorage.getItem(VISIT_RECORDED_KEY)
     const loadCount = async () => {
       try {
-        const response = await fetch('/api/visitors', { method: recordVisit ? 'POST' : 'GET' })
+        const baseUrl = 'https://api.counterapi.dev/v1/ali-jalal-portfolio/visitors'
+        const response = await fetch(recordVisit ? `${baseUrl}/up` : baseUrl, { method: recordVisit ? 'POST' : 'GET' })
         if (!response.ok) throw new Error('Unable to load visitor count')
         const { count } = await response.json()
         if (recordVisit) localStorage.setItem(VISIT_RECORDED_KEY, 'true')
