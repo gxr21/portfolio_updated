@@ -56,6 +56,7 @@ async function sendEmailViaBrevoApi({ name, email, phone, message }) {
     </div>
   `
 
+  const senderEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'alijalal200311@gmail.com'
   const response = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
@@ -63,8 +64,8 @@ async function sendEmailViaBrevoApi({ name, email, phone, message }) {
       'api-key': apiKey,
     },
     body: JSON.stringify({
-      sender: { name: name, email: process.env.SMTP_FROM || process.env.SMTP_USER },
-      to: [{ email: process.env.CONTACT_EMAIL }],
+      sender: { name: name || 'Portfolio Contact', email: senderEmail },
+      to: [{ email: process.env.CONTACT_EMAIL || senderEmail }],
       replyTo: { email: email.trim() },
       subject: `رسالة جديدة من موقع البورتفوليو - ${name.trim().slice(0, 100)}`,
       htmlContent,
