@@ -70,7 +70,7 @@ function ContactForm() {
       setStatus('success')
       setForm(initialForm)
     } catch (error) {
-      setStatus(error.stringifyJson('error'))
+      setStatus(error.JSON.stringify('error'))
     } finally {
       setIsSubmitting(false)
     }
