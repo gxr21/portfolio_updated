@@ -1,9 +1,9 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import path from 'path'
+import nodemailer from 'nodemailer'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
-
 // إعداد ملف .env قبل أي شيء
 dotenv.config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.env') })
 
@@ -11,13 +11,22 @@ const app = express()
 const PORT = process.env.PORT || 5000
 const requestLog = new Map()
 
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: Number(process.env.SMTP_PORT) || 587,
+  secure: Number(process.env.SMTP_PORT) === 465,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+})
+
 app.use(express.json({ limit: '20kb' }))
 app.use(express.static(path.join(process.cwd(), 'dist')))
 
 const allowedOrigins = [
-  'https://ali-jalal.com',
-  'https://www.ali-jalal.com',
   'http://localhost:3000',
+  'http://localhost:5173',
   'https://portfolio-updated-3vas.onrender.com'
 ];
 
@@ -80,22 +89,15 @@ app.post('/api/visitors', async (req, res) => {
   }
 })
 
-// --- مسار إرسال البريد المعدل والمضمون ---
+// --- مسار إرسال البريد عبر nodemailer ---
 app.post('/api/contact', async (req, res) => {
   const ip = req.ip || req.socket.remoteAddress || 'unknown'
   if (isRateLimited(ip)) return res.status(429).json({ success: false, error: 'Too many requests. Please try again later.' })
   if (!validateContact(req.body)) return res.status(400).json({ success: false, error: 'Invalid form data.' })
 
-  // التحقق من وجود مفتاح Web3Forms في البيئة
-   if (!process.env.WEB3FORMS_KEY) {
-    console.error('WEB3FORMS_KEY is missing in .env file')
-    return res.status(500).json({ success: false, error: 'Server configuration error.' })
-  }
-
   try {
     const { name, email, phone, message } = req.body
 
-    // تجهيز قالب رسالة أسهل للقراءة وجميل ومنسق لبريدك
     const formattedMessage = `
 --- رسالة جديدة من موقعك ---
 الاسم: ${name.trim()}
@@ -107,29 +109,26 @@ ${message.trim()}
 ---------------------------
     `.trim()
 
-    // إرسال البيانات عبر الـ API الآمن لـ Web3Forms
-    const response = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        access_key: process.env.WEB3FORMS_KEY,
-        subject: `رسالة بورتفوليو جديدة من: ${name.trim().slice(0, 30)}`,
-        from_name: 'Portfolio Contact Form',
-        name: name.trim(),
-        email: email.trim(), // سيتيح لك هذا الرد مباشرة على الإيميل (Reply-To) من بريدك
-        phone: phone.trim(),
-        message: formattedMessage
-      })
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+      to: process.env.CONTACT_EMAIL || process.env.SMTP_USER,
+      replyTo: email.trim(),
+      subject: `رسالة جديدة من موقع البورتفوليو - ${name.trim().slice(0, 100)}`,
+      text: formattedMessage,
+      html: `
+      <div dir="rtl" 
+      style="font-family:Arial,sans-serif;
+      max-width:600px;margin:0 auto">
+      <h2 style="color:#0145F2">رسالة جديدة من الموقع</h2><p><strong>الاسم:</strong> 
+      ${escapeHtml(name)}</p><p><strong>البريد الإلكتروني:</strong> 
+      ${escapeHtml(email)}</p><p><strong>الهاتف:</strong> 
+      ${escapeHtml(phone)}</p>
+      <p><strong>الرسالة:</strong>
+      </p>
+      <p style="background:#f5f5f5;
+      padding:15px;border-radius:8px;
+      white-space:pre-wrap">${escapeHtml(message)}</p></div>`,
     })
-
-    const result = await response.json()
-
-    if (!response.ok || !result.success) {
-      throw new Error(result.message || 'Web3Forms API failed to send email')
-    }
 
     return res.json({ success: true })
   } catch (error) {
