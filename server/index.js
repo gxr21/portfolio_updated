@@ -23,7 +23,7 @@ app.use(cors({ origin: (origin, callback) => {
 }}));
 app.set('trust proxy', true) // Trust the first proxy for rate limiting
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
   port: Number(process.env.SMTP_PORT) || 587,
   secure: Number(process.env.SMTP_PORT) === 465,
   auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
