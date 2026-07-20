@@ -105,7 +105,7 @@ app.post('/api/contact', async (req, res) => {
     })
     return res.json({ success: true })
   } catch (error) {
-    console.error('Error sending email:', error)
+    console.error('Error sending email:', JSON.stringify(error, Object.getOwnPropertyNames(error)))
     return res.status(500).json({ success: false, error: 'Unable to send the message.' })
   }
 })
