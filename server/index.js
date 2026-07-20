@@ -87,7 +87,7 @@ app.post('/api/contact', async (req, res) => {
   if (!validateContact(req.body)) return res.status(400).json({ success: false, error: 'Invalid form data.' })
 
   // التحقق من وجود مفتاح Web3Forms في البيئة
-  if (!process.env.WEB3FORMS_KEY) {
+   if (!process.env.WEB3FORMS_KEY) {
     console.error('WEB3FORMS_KEY is missing in .env file')
     return res.status(500).json({ success: false, error: 'Server configuration error.' })
   }
@@ -125,9 +125,15 @@ ${message.trim()}
       })
     })
 
+    if (!response.ok) {
+      const text = await response.text()
+      console.error('Web3Forms API error response:', response.status, text)
+      throw new Error(`Web3Forms API returned status ${response.status}`)
+    }
+
     const result = await response.json()
 
-    if (!response.ok || !result.success) {
+    if (!result.success) {
       throw new Error(result.message || 'Web3Forms API failed to send email')
     }
 
