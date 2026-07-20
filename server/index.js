@@ -16,7 +16,7 @@ const counterBaseUrl = `https://api.counterapi.dev/v1/${encodeURIComponent(count
 
 app.use(express.json({ limit: '20kb' }))
 app.use(express.static(path.join(process.cwd(), 'dist')))
-const allowedOrigins = ['https://ali-jalal.com', 'https://www.ali-jalal.com', 'http://localhost:3000','https://portfolio-updated-3vas.onrender.com/contact'];
+const allowedOrigins = ['https://ali-jalal.com', 'https://www.ali-jalal.com', 'http://localhost:3000','https://portfolio-updated-3vas.onrender.com'];
 app.use(cors({ origin: (origin, callback) => {
   if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
   return callback(new Error('CORS policy: This origin is not allowed.'))
