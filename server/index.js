@@ -125,15 +125,9 @@ ${message.trim()}
       })
     })
 
-    if (!response.ok) {
-      const text = await response.text()
-      console.error('Web3Forms API error response:', response.status, text)
-      throw new Error(`Web3Forms API returned status ${response.status}`)
-    }
-
     const result = await response.json()
 
-    if (!result.success) {
+    if (!response.ok || !result.success) {
       throw new Error(result.message || 'Web3Forms API failed to send email')
     }
 
