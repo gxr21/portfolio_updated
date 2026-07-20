@@ -6,7 +6,7 @@ import { useLanguage } from '../i18n/language-context.jsx'
 
 const certificates = [
   ['/certifcate_micosoft.jpg', 'Microsoft AI Skills Fest 2026 – Verified Digital Badge (Credly)'],
-  ['/certificate4.jpg', 'HSE (Health, Safety & Environment) Certificate – Jisr Al-Amal Organization'],
+  ['/certificate4.jpg', 'HSE (Health, Safety & Environment) Certificate'],
   ['/certificate3.jpg', 'Telecommunications Certificate – Asiacell, August 2025'],
   ['/certificate2.jpg', 'Artificial Intelligence Marathon – Southern Technical University'],
 ]
@@ -15,7 +15,16 @@ function LandingPage() {
   const { direction, t } = useLanguage()
   return <><NavBar /><main className="min-h-screen bg-surface" dir={direction}>
     <section id="home" className="container mx-auto flex flex-col items-center justify-between px-4 py-20 scroll-mt-20 md:flex-row">
-      <div className="max-w-2xl"><h1 className="mb-4 text-6xl font-bold text-black">{t.landing.name}</h1><h2 className="text-2xl font-bold text-black">{t.landing.role}</h2><p className="mt-4 text-lg leading-8 text-gray-600">{t.landing.intro}</p><a href="/uplod/ALCV44.pdf" download="Ali-Jalal-CV.pdf" className="mt-6 inline-flex h-12 w-44 items-center justify-center rounded-md border border-primary text-primary transition-colors hover:bg-primary hover:text-white">{t.landing.downloadCv}</a></div>
+      <div className="max-w-2xl"><h1 className="mb-4 text-6xl font-bold text-black">{t.landing.name}
+        </h1>
+        <h2 className="text-2xl font-bold text-black">{t.landing.role}
+          </h2>
+          <p className="mt-4 text-lg leading-8 text-gray-600">{t.landing.intro}
+            </p>
+            <a href="/uplod/ALCV44.pdf" download="Ali-Jalal-CV.pdf" className="mt-6 inline-flex h-12 w-44 items-center justify-center rounded-md border border-primary text-primary transition-colors hover:bg-primary hover:text-white">
+            {t.landing.downloadCv}
+            </a>
+          </div>
       <img src="/profilecv.jpeg" alt={t.landing.name} className="mt-10 h-72 w-72 rounded-full object-cover shadow-lg md:mt-0" />
     </section>
     <Skills />
