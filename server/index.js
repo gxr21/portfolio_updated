@@ -21,6 +21,7 @@ app.use(cors({ origin: (origin, callback) => {
   if (!origin || allowedOrigins.includes(origin)) return callback(null, true)
   return callback(new Error('CORS policy: This origin is not allowed.'))
 }}));
+app.set('trust proxy', true) // Trust the first proxy for rate limiting
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: Number(process.env.SMTP_PORT) || 587,
@@ -86,7 +87,21 @@ app.post('/api/contact', async (req, res) => {
       replyTo: email.trim(),
       subject: `New portfolio message from ${name.trim().slice(0, 100)}`,
       text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${message}`,
-      html: `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto"><h2 style="color:#0145F2">رسالة جديدة من الموقع</h2><p><strong>الاسم:</strong> ${escapeHtml(name)}</p><p><strong>البريد الإلكتروني:</strong> ${escapeHtml(email)}</p><p><strong>الهاتف:</strong> ${escapeHtml(phone)}</p><p><strong>الرسالة:</strong></p><p style="background:#f5f5f5;padding:15px;border-radius:8px;white-space:pre-wrap">${escapeHtml(message)}</p></div>`,
+      html: `
+      <div dir="rtl" 
+      style="font-family:Arial,sans-serif;
+      max-width:600px;margin:0 auto">
+      <h2 style="color:#0145F2">رسالة جديدة من الموقع</h2><p><strong>الاسم:</strong> 
+      ${escapeHtml(name)}</p><p><strong>البريد الإلكتروني:</strong> 
+      ${escapeHtml(email)}</p><p><strong>الهاتف:</strong> 
+      ${escapeHtml(phone)}</p>
+      <p><strong>الرسالة:</strong>
+      </p>
+      <p style="background:#f5f5f5;
+      padding:15px;border-radius:8px;
+      white-space:pre-wrap">$
+      {escapeHtml(message)}</p>
+      </div>`,
     })
     return res.json({ success: true })
   } catch (error) {
