@@ -40,8 +40,10 @@ function validateContact({ name, email, phone, message }) {
 async function sendEmailViaBrevoApi({ name, email, phone, message }) {
   const apiKey = process.env.BREVO_API_KEY
   if (!apiKey) {
+    console.error('BREVO_API_KEY is missing or empty')
     throw new Error('Missing BREVO_API_KEY in environment variables')
   }
+  console.log('Using Brevo API key:', apiKey.slice(0, 8) + '...')
 
   const htmlContent = `
     <div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto">
