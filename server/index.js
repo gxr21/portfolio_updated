@@ -158,5 +158,5 @@ ${message.trim()}
 })
 
 app.get('*', (req, res) => res.sendFile(path.join(process.cwd(), 'dist', 'index.html')))
-
+console.log(arcjetClient ? 'Arcjet protection is enabled.' : 'Arcjet protection is disabled. Using basic rate limiting.')
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
