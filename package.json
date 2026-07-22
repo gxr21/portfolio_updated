@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@arcjet/node": "^1.9.1",
     "@tailwindcss/vite": "^4.3.3",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
