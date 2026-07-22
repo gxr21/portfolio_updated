@@ -1,7 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import path from 'path'
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
 // إعداد ملف .env قبل أي شيء
@@ -11,15 +11,7 @@ const app = express()
 const PORT = process.env.PORT || 5000
 const requestLog = new Map()
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: Number(process.env.SMTP_PORT) === 465 ? true : false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-})
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 app.use(express.json({ limit: '20kb' }))
 app.use(express.static(path.join(process.cwd(), 'dist')))
@@ -108,10 +100,13 @@ app.post('/api/contact', async (req, res) => {
 ${message.trim()}
 ---------------------------
     `.trim()
-    await transporter.verify()
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
-      to: process.env.CONTACT_EMAIL || process.env.SMTP_USER,
+    if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM || !process.env.CONTACT_EMAIL) {
+      throw new Error('Resend configuration is missing. Set RESEND_API_KEY, RESEND_FROM, and CONTACT_EMAIL.')
+    }
+
+    const { error } = await resend.emails.send({
+      from: process.env.RESEND_FROM,
+      to: [process.env.CONTACT_EMAIL],
       replyTo: email.trim(),
       subject: `رسالة جديدة من موقع البورتفوليو - ${name.trim().slice(0, 100)}`,
       text: formattedMessage,
@@ -129,14 +124,7 @@ ${message.trim()}
       padding:15px;border-radius:8px;
       white-space:pre-wrap">${escapeHtml(message)}</p></div>`,
     })
-    console.log({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  user: process.env.SMTP_USER,
-  from: process.env.SMTP_FROM,
-  to: process.env.CONTACT_EMAIL,
-  passExists: !!process.env.SMTP_PASS,
-});
+    if (error) throw new Error(error.message)
     return res.json({ success: true })
   } catch (error) {
     console.error('Error sending email:', error)
