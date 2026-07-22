@@ -7,7 +7,6 @@ import LoadingScreen from './components/loading-screen/loading-screen.jsx'
 import { useLanguage } from './i18n/language-context.jsx'
 
 const isMaintenanceMode = false;
-
 function App() {
   const { t } = useLanguage()
   const [path, setPath] = useState(() => window.location.pathname.replace(/\/$/, '') || '/')
@@ -33,12 +32,18 @@ function App() {
     return () => { document.removeEventListener('click', handleNavigation); window.removeEventListener('popstate', handlePopState) }
   }, [path, t])
 
+  let content = <LandingPage />
+
   if (isMaintenanceMode) return <Maintenance />
   if (isWelcomeVisible) return <LoadingScreen mode="welcome" />
   if (isNavigating) return <LoadingScreen pageName={nextPage} />
-  if (path === '/projects') return <Projects />
-  if (path === '/services') return <Services />
-  return <LandingPage />
+  if (path === '/projects') {
+    content = <Projects />
+  } else if (path === '/services') {
+    content = <Services />
+  }
+
+  return content
 }
 
 export default App
