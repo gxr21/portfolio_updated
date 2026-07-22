@@ -2,14 +2,25 @@ import express from 'express'
 import dotenv from 'dotenv'
 import path from 'path'
 import { Resend } from 'resend'
+import arcjet, { detectBot, shield, slidingWindow, validateEmail } from '@arcjet/node'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
 // إعداد ملف .env قبل أي شيء
 dotenv.config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.env') })
-
 const app = express()
 const PORT = process.env.PORT || 5000
 const requestLog = new Map()
+const arcjetClient = process.env.ARCJET_KEY && process.env.ARCJET_KEY !== 'your-arcjet-site-key'
+  ? arcjet({
+      key: process.env.ARCJET_KEY,
+      rules: [
+        shield({ mode: 'LIVE' }),
+        detectBot({ mode: 'LIVE', allow: [] }),
+        validateEmail({ mode: 'LIVE', deny: ['DISPOSABLE', 'INVALID', 'NO_MX_RECORDS'] }),
+        slidingWindow({ mode: 'LIVE', interval: '10m', max: 5 }),
+      ],
+    })
+  : null
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -84,8 +95,22 @@ app.post('/api/visitors', async (req, res) => {
 // --- مسار إرسال البريد عبر nodemailer ---
 app.post('/api/contact', async (req, res) => {
   const ip = req.ip || req.socket.remoteAddress || 'unknown'
-  if (isRateLimited(ip)) return res.status(429).json({ success: false, error: 'Too many requests. Please try again later.' })
   if (!validateContact(req.body)) return res.status(400).json({ success: false, error: 'Invalid form data.' })
+
+  if (arcjetClient) {
+    try {
+      const decision = await arcjetClient.protect(req, { email: req.body.email })
+      if (decision.isDenied()) {
+        if (decision.reason.isRateLimit()) return res.status(429).json({ success: false, error: 'Too many requests. Please try again later.' })
+        if (decision.reason.isEmail()) return res.status(400).json({ success: false, error: 'Please use a valid email address.' })
+        return res.status(403).json({ success: false, error: 'This request was blocked for security reasons.' })
+      }
+    } catch (error) {
+      console.error('Arcjet protection error:', error)
+    }
+  } else if (isRateLimited(ip)) {
+    return res.status(429).json({ success: false, error: 'Too many requests. Please try again later.' })
+  }
 
   try {
     const { name, email, phone, message } = req.body
