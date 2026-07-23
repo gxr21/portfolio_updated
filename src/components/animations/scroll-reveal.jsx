@@ -22,4 +22,4 @@ export const cardReveal = {
   },
 }
 
-export const scrollViewport = { once: true, amount: 0.18 }
+export const scrollViewport = { once: true, amount: 0.05  , margin:"-30px 0px -30px 0px" }
