@@ -3,7 +3,7 @@ import NavBar from '../components/navbar/navbar.jsx'
 import { useLanguage } from '../i18n/language-context.jsx'
 import { cardReveal, scrollReveal, scrollViewport, staggerContainer } from '../components/animations/scroll-reveal.jsx'
 
-const images = ['/sse.jpg', '/securitypackege.jpg', '/midecalcenter.jpg', '/academichorizon.jpg', '/dashboard.jpg','/ThenAndNow.jpg','/srab.jpg','/Thrwa.jpg','/wsaly.jpg','/dashboardstudent.jpg']
+const images = ['/sse.jpg', '/securitypackege.jpg', '/midecalcenter.jpg', '/academichorizon.jpg', '/dashboard.jpg','/ThenAndNow.jpg','/srab.jpg','/Thrwa.jpg','/wsaly.jpg','/dashboardstudent.jpg','/PHP_Website.jpg','/claculator.jpg','/abssence.jpg']
 
 function Projects() {
   const { direction, t } = useLanguage()

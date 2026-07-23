@@ -42,7 +42,10 @@ const translations = {
         { title: 'سراب' , description: 'شات بوت مدعم بالذكاء الاصطناعي يتيح للمستخدمين التفاعل مع النظام والحصول على إجابات فورية وموثوقة على استفساراتهم.'},
         { title: 'ثروة' , description: 'برنامج سطح مكتب للمساعدة في ادخار المال و حساب تكاليف المعيشة و الادخار و الاستثمار و ادارة الميزانية الشهرية و السنوية و متابعة المصاريف و الدخل و الادخار و الاستثمار و الادارة المالية الشخصية.'},
         { title: ' واجهة تسجيل دخول (وصالي)' , description: 'واجهة تسجيل دخول متكاملة لموقع وصالي، مع تصميم جذاب وميزات أمان متقدمة لضمان تجربة مستخدم سلسة وآمنة.'},
-        { title: 'واجهة تحكم الطالب (عملية بولونيا)' , description: 'واجهة تحكم للطالب في نظام التعليم البولوني، بالتعاون مع الجامعة التقنية الجنوبية، لإدارة ملفه الشخصي ومتابعة الدورات الدراسية.'}
+        { title: 'واجهة تحكم الطالب (عملية بولونيا)' , description: 'واجهة تحكم للطالب في نظام التعليم البولوني، بالتعاون مع الجامعة التقنية الجنوبية، لإدارة ملفه الشخصي ومتابعة الدورات الدراسية.'},
+        { title: 'موقع تعليم Php' , description:'موقع لتعليم لغة php بأسلوب جميل و منسق و سهل الفهم و يحتوي على امثلة عملية و مشاريع لتطبيق ما تم تعلمه.'},
+        { title: 'آلة حاسبة' , description:'آلة حاسبة بسيطة وسهلة الاستخدام تتيح للمستخدمين إجراء العمليات الحسابية الأساسية بسرعة وكفاءة.'},
+        { title:'واجهة غياب الطلاب' , description:'واجهة لعرض غياب الطلاب و متابعة حضورهم و غيابهم و ارسال تنبيهات للطلاب و اولياء امورهم و متابعة اداء الطلاب و تقديم تقارير مفصلة عن الحضور و الغياب و الاداء.'}
         
       ],
     },
@@ -95,7 +98,10 @@ const translations = {
         { title: 'Sarab', description: 'An AI-powered chatbot that allows users to interact with the system and get immediate and reliable answers to their queries.' },
         { title: 'Thrwa', description: 'A desktop program to help with saving money, calculating living expenses, saving and investing, managing monthly and annual budgets, tracking expenses and income, and personal financial management.' },
         { title: 'Wasaly Login Page Security', description:'A fully integrated login interface for Wasali, with an attractive design and advanced security features to ensure a smooth and secure user experience.' },
-        { title: 'Dashboard Student Bolonya Proccess' , description: 'A student control interface for the Bologna Education System, in collaboration with the Southern Technical University, to manage their profile and courses.'}
+        { title: 'Dashboard Student Bolonya Proccess' , description: 'A student control interface for the Bologna Education System, in collaboration with the Southern Technical University, to manage their profile and courses.'},
+        { title: 'Php Learning Website' , description:'A website for learning PHP in a beautiful, organized, and easy-to-understand style, containing practical examples and projects to apply what has been learned.'},
+        { title: 'clculator' , description:'A simple and easy-to-use calculator that allows users to perform basic arithmetic operations quickly and efficiently.'},
+        {title: 'Absence' , description:'An interface to display student absences, track their attendance and absence, send alerts to students and their parents, monitor student performance, and provide detailed reports on attendance, absence, and performance.'}
       ],
     },
     form: {
