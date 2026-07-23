@@ -1,3 +1,4 @@
+import { decrypt } from 'dotenv'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 const translations = {
@@ -37,6 +38,12 @@ const translations = {
         { title: 'نظام إدارة المجمعات الطبية', description: 'تطبيق يسهّل الوصول إلى الأطباء والمتخصصين مع بحث دقيق للحصول على الرعاية المناسبة.' },
         { title: 'منصة الإرشاد الأكاديمي', description: 'بوابة تعليمية تساعد الطلاب على اتخاذ قراراتهم الدراسية بثقة.' },
         { title: 'لوحة التحكم', description: 'لوحة شاملة لإدارة البيانات ومراقبة الأداء واتخاذ قرارات مبنية على المعلومات.' },
+        { title: 'قبل و بعد', description: 'مشروع متكامل لعرض ابرز الاماكن و المعالم التاريخية بمختلف دول العالم مع امكانية رفع صور و معالجتها بأستخدام الذكاء الاصطناعي.'},
+        { title: 'سراب' , description: 'شات بوت مدعم بالذكاء الاصطناعي يتيح للمستخدمين التفاعل مع النظام والحصول على إجابات فورية وموثوقة على استفساراتهم.'},
+        { title: 'ثروة' , description: 'برنامج سطح مكتب للمساعدة في ادخار المال و حساب تكاليف المعيشة و الادخار و الاستثمار و ادارة الميزانية الشهرية و السنوية و متابعة المصاريف و الدخل و الادخار و الاستثمار و الادارة المالية الشخصية.'},
+        { title: ' واجهة تسجيل دخول (وصالي)' , description: 'واجهة تسجيل دخول متكاملة لموقع وصالي، مع تصميم جذاب وميزات أمان متقدمة لضمان تجربة مستخدم سلسة وآمنة.'},
+        { title: 'واجهة تحكم الطالب (عملية بولونيا)' , description: 'واجهة تحكم للطالب في نظام التعليم البولوني، بالتعاون مع الجامعة التقنية الجنوبية، لإدارة ملفه الشخصي ومتابعة الدورات الدراسية.'}
+        
       ],
     },
     form: {
@@ -84,6 +91,11 @@ const translations = {
         { title: 'Medical Complex Management System', description: 'An application that makes it easier to find doctors and specialists with precise search tools.' },
         { title: 'Academic Guidance Platform', description: 'An educational portal that helps students make their academic decisions with confidence.' },
         { title: 'Dashboard', description: 'A comprehensive dashboard for managing data, monitoring performance, and making informed decisions.' },
+        { title: 'Then and Now', description: 'A project An integrated project to showcase the most prominent historical places and landmarks in various countries around the world, with the ability to upload and process images using artificial intelligence.' },
+        { title: 'Sarab', description: 'An AI-powered chatbot that allows users to interact with the system and get immediate and reliable answers to their queries.' },
+        { title: 'Thrwa', description: 'A desktop program to help with saving money, calculating living expenses, saving and investing, managing monthly and annual budgets, tracking expenses and income, and personal financial management.' },
+        { title: 'Wasaly Login Page Security', description:'A fully integrated login interface for Wasali, with an attractive design and advanced security features to ensure a smooth and secure user experience.' },
+        { title: 'Dashboard Student Bolonya Proccess' , description: 'A student control interface for the Bologna Education System, in collaboration with the Southern Technical University, to manage their profile and courses.'}
       ],
     },
     form: {
