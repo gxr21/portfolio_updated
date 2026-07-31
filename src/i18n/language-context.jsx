@@ -69,7 +69,7 @@ const translations = {
       contactTitle: 'Would you like to work with me?', contactText: 'If you are looking for a skilled web developer and UI designer, I am here to help. Feel free to get in touch to discuss your next project.',
       serviceCards: [
         { title: 'Web Development', description: 'Building interactive websites and web applications with modern technologies.' },
-        { t  itle: 'Mobile App Development', description: 'Designing and developing mobile applications for iOS and Android.' },
+        { title: 'Mobile App Development', description: 'Designing and developing mobile applications for iOS and Android.' },
         { title: 'Helpful Tools', description: 'Creating helpful tools that improve user experience and productivity.' },
       ],
       featuredProjects: [
