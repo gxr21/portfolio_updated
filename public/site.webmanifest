@@ -1,0 +1,23 @@
+{
+  "name": "Ali Jalal Portfolio",
+  "short_name": "Ali Jalal",
+  "description": "Ali Jalal portfolio, projects, services, and contact.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#f8fafc",
+  "theme_color": "#0145F2",
+  "orientation": "portrait-primary",
+  "categories": ["portfolio", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
