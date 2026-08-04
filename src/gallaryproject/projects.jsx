@@ -158,12 +158,11 @@ function Projects() {
           <a href={projectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-700 transition-colors duration-300 hover:bg-primary hover:text-white" aria-label={t.projects.viewProject} title={t.projects.viewProject}>
             <GitHubIcon fontSize="small" />
           </a>
-          <a href={liveProjectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-700 transition-colors duration-300 hover:bg-primary hover:text-white" aria-label={t.projects.openProject} title={t.projects.openProject}>
+          {/* <a href={liveProjectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-700 transition-colors duration-300 hover:bg-primary hover:text-white" aria-label={t.projects.openProject} title={t.projects.openProject}>
             <OpenInNewIcon fontSize="small" />
-          </a>
+          </a> */}
         </div>
         </div>
-
         </motion.article> 
         
       })}
