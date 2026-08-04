@@ -30,7 +30,7 @@ app.use(express.static(path.join(process.cwd(), 'dist')))
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  'https://portfolio-updated-3vas.onrender.com'
+  'https://portfolio-r8qp.onrender.com'
 ];
 
 app.use(cors({
