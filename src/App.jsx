@@ -13,8 +13,20 @@ function App() {
   const [isWelcomeVisible, setIsWelcomeVisible] = useState(true)
   const [isNavigating, setIsNavigating] = useState(false)
   const [nextPage, setNextPage] = useState('')
+  const [pendingHash, setPendingHash] = useState(() => window.location.hash)
 
   useEffect(() => { const timer = window.setTimeout(() => setIsWelcomeVisible(false), 1500); return () => window.clearTimeout(timer) }, [])
+
+  useEffect(() => {
+    if (isWelcomeVisible || isNavigating || !pendingHash) return
+
+    const timer = window.setTimeout(() => {
+      document.querySelector(pendingHash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      setPendingHash('')
+    }, 80)
+
+    return () => window.clearTimeout(timer)
+  }, [isNavigating, isWelcomeVisible, pendingHash, path])
 
   useEffect(() => {
     const pageNames = { '/': t.nav.home, '/projects': t.projects.title, '/services': t.services.title }
@@ -23,11 +35,22 @@ function App() {
       if (!link || link.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
       const targetUrl = new URL(link.href, window.location.origin)
       const targetPath = targetUrl.pathname.replace(/\/$/, '') || '/'
-      if (targetUrl.origin !== window.location.origin || targetUrl.hash || !pageNames[targetPath] || targetPath === path) return
+      if (targetUrl.origin !== window.location.origin || !pageNames[targetPath]) return
+      if (targetPath === path) {
+        if (!targetUrl.hash) return
+        event.preventDefault()
+        window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.hash}`)
+        setPendingHash(targetUrl.hash)
+        return
+      }
+
       event.preventDefault(); setNextPage(pageNames[targetPath]); setIsNavigating(true)
-      window.setTimeout(() => { window.history.pushState({}, '', targetUrl.pathname); setPath(targetPath); setIsNavigating(false) }, 550)
+      window.setTimeout(() => { window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.hash}`); setPath(targetPath); setPendingHash(targetUrl.hash); setIsNavigating(false) }, 550)
     }
-    const handlePopState = () => setPath(window.location.pathname.replace(/\/$/, '') || '/')
+    const handlePopState = () => {
+      setPath(window.location.pathname.replace(/\/$/, '') || '/')
+      setPendingHash(window.location.hash)
+    }
     document.addEventListener('click', handleNavigation); window.addEventListener('popstate', handlePopState)
     return () => { document.removeEventListener('click', handleNavigation); window.removeEventListener('popstate', handlePopState) }
   }, [path, t])
