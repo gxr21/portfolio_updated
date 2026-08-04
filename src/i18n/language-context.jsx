@@ -31,7 +31,7 @@ const translations = {
       ],
     },
     projects: {
-      title: 'معرض المشاريع', home: 'الصفحة الرئيسية', viewProject: 'عرض GitHub',
+      title: 'معرض المشاريع', home: 'الصفحة الرئيسية', viewProject: 'عرض GitHub', openProject: 'فتح المشروع', rating: 'تقييم المشروع',
       items: [
         { id:1, title: 'نظام إدارة الملفات', description: 'واجهة تحكم متكاملة لإدارة وتتبع الملفات، توفر نظرة عامة على الحالة والتاريخ والحجم وأدوات الإجراءات.' },
         { id:2, title: 'منصة الأمان الرقمي', description: 'لوحة تحكم أمنية تهدف إلى حماية البيانات وتقديم أدوات تحليلية وخطط أمنية استباقية.' },
@@ -87,7 +87,7 @@ const translations = {
       ],
     },
     projects: {
-      title: 'Project Gallery', home: 'Home', viewProject: 'View on GitHub',
+      title: 'Project Gallery', home: 'Home', viewProject: 'View on GitHub', openProject: 'Open project', rating: 'Project rating',
       items: [
         { id: 1, title: 'File Management System', description: 'A complete dashboard for managing and tracking files, including their status, history, size, and actions.' },
         { id: 2, title: 'Digital Security Platform', description: 'A security dashboard that protects data with analytical tools and proactive security planning.' },

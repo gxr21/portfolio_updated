@@ -1,32 +1,25 @@
 import { useEffect, useState } from 'react'
 import { useLanguage } from '../../i18n/language-context.jsx'
-
 const VISIT_RECORDED_KEY = 'portfolio-visitor-recorded'
-
 function VisitorCounter() {
   const [visitorCount, setVisitorCount] = useState(null)
   const { t } = useLanguage()
-
   useEffect(() => {
     let isMounted = true
     const recordVisit = !localStorage.getItem(VISIT_RECORDED_KEY)
-    
     const loadCount = async () => {
       try {
         // تم استبدال الرابط الخارجي بمسار الـ API المحلي في سيرفرك
         const baseUrl = '/api/visitors'
-        
         const response = await fetch(baseUrl, { 
           method: recordVisit ? 'POST' : 'GET',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           }
-        })
-        
+        })     
         if (!response.ok) throw new Error('Unable to load visitor count')
-        const { count } = await response.json()
-        
+        const { count } = await response.json()     
         if (recordVisit) localStorage.setItem(VISIT_RECORDED_KEY, 'true')
         if (isMounted) setVisitorCount(count)
       } catch (error) {
@@ -38,7 +31,6 @@ function VisitorCounter() {
     void loadCount()
     return () => { isMounted = false }
   }, [])
-
   return (
     <div className="flex items-center gap-2 text-sm text-white">
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

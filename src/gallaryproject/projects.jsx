@@ -1,4 +1,9 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import GitHubIcon from '@mui/icons-material/GitHub'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import StarIcon from '@mui/icons-material/Star'
+import StarBorderIcon from '@mui/icons-material/StarBorder'
 import NavBar from '../components/navbar/navbar.jsx'
 import { useLanguage } from '../i18n/language-context.jsx'
 import { cardReveal, scrollReveal, scrollViewport, staggerContainer } from '../components/animations/scroll-reveal.jsx'
@@ -19,6 +24,22 @@ const projectLinks = {
   11: 'https://github.com/gxr21/PHP.git',
   12: githubProfile,
   13: 'https://github.com/gxr21/OnlineAttSys.git',
+}
+
+const projectLiveLinks = {
+  1: 'https://sseencryptedfiles.onrender.com/',
+  2: '',
+  3: '',
+  4: '',
+  5: '',
+  6: '',
+  7: '',
+  8: '',
+  9: '',
+  10: '',
+  11: '',
+  12: '',
+  13: '',
 }
 
 const projectTechs = {
@@ -90,6 +111,21 @@ const projectTechs = {
 
 function Projects() {
   const { direction, t } = useLanguage()
+  const [ratings, setRatings] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('project-ratings')) || {}
+    } catch {
+      return {}
+    }
+  })
+
+  const setProjectRating = (projectId, rating) => {
+    setRatings((currentRatings) => {
+      const nextRatings = { ...currentRatings, [projectId]: rating }
+      localStorage.setItem('project-ratings', JSON.stringify(nextRatings))
+      return nextRatings
+    })
+  }
   
   return <main className="min-h-screen bg-surface" dir={direction}>
     <NavBar />
@@ -99,18 +135,31 @@ function Projects() {
         {t.projects.items.map((project, index) =>{
           const techs = projectTechs[project.id] || []
           const projectLink = projectLinks[project.id] || githubProfile
+          const liveProjectLink = projectLiveLinks[project.id] || projectLink
+          const rating = ratings[project.id] || 0
           return <motion.article variants={cardReveal} key={`project-${index}`} className="overflow-hidden rounded-2xl border bg-white  shadow transition-shadow hover:shadow-lg">
         <img src={images[index]} alt="" className="h-48 w-full object-fit" loading="lazy" />
         <div className="p-6">
           <h2 className="text-xl font-bold">{project.title}</h2>
         <p className="mt-4 leading-7 text-gray-600">{project.description}</p>
+        <div className="mt-4 flex items-center gap-1" aria-label={t.projects.rating}>
+          {[1, 2, 3, 4, 5].map((star) => {
+            const Star = star <= rating ? StarIcon : StarBorderIcon
+            return <button key={`${project.id}-rating-${star}`} type="button" onClick={() => setProjectRating(project.id, star)} className="inline-flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors duration-300 hover:bg-gray-300 hover:text-primary" aria-label={`${t.projects.rating} ${star}`}>
+              <Star fontSize="small" />
+            </button>
+          })}
+        </div>
         <div className="mt-5 flex flex-wrap gap-2">
           {techs.map((tech) => <span key={`${project.id}-${tech.name}`} className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-primary hover:text-white transition-colors duration-300">
             <img src={tech.icon} alt="" className="h-5 w-5 object-contain " loading="lazy" />
             {tech.name}
           </span>)}
-          <a href={projectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 transition-colors duration-300 hover:bg-primary" aria-label={t.projects.viewProject} title={t.projects.viewProject}>
-            <img src="/github.svg" alt="" className="h-5 w-5" loading="lazy" />
+          <a href={projectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-700 transition-colors duration-300 hover:bg-primary hover:text-white" aria-label={t.projects.viewProject} title={t.projects.viewProject}>
+            <GitHubIcon fontSize="small" />
+          </a>
+          <a href={liveProjectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-700 transition-colors duration-300 hover:bg-primary hover:text-white" aria-label={t.projects.openProject} title={t.projects.openProject}>
+            <OpenInNewIcon fontSize="small" />
           </a>
         </div>
         </div>
