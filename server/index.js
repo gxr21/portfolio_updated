@@ -78,6 +78,31 @@ async function getVisitorCount(increment = false) {
   return Number(count || 0)
 }
 
+const PROJECT_IDS = Array.from({ length: 13 }, (_, index) => index + 1)
+
+function projectRatingKeys(projectId) {
+  return {
+    total: `portfolio:project:${projectId}:rating-total`,
+    count: `portfolio:project:${projectId}:rating-count`,
+  }
+}
+
+async function getProjectRatings() {
+  if (!redis) throw new Error('Upstash Redis configuration is missing.')
+
+  const keys = PROJECT_IDS.flatMap((projectId) => {
+    const { total, count } = projectRatingKeys(projectId)
+    return [total, count]
+  })
+  const values = await redis.mget(...keys)
+
+  return Object.fromEntries(PROJECT_IDS.map((projectId, index) => {
+    const total = Number(values[index * 2] || 0)
+    const count = Number(values[index * 2 + 1] || 0)
+    return [projectId, { count, average: count ? Number((total / count).toFixed(1)) : 0 }]
+  }))
+}
+
 app.get('/api/visitors', async (req, res) => {
   try {
     return res.json({ count: await getVisitorCount() })
@@ -93,6 +118,42 @@ app.post('/api/visitors', async (req, res) => {
   } catch (error) {
     console.error('Error updating visitor count:', error)
     return res.status(503).json({ error: 'Visitor counter is temporarily unavailable.' })
+  }
+})
+
+app.get('/api/projects/ratings', async (req, res) => {
+  try {
+    return res.json({ ratings: await getProjectRatings() })
+  } catch (error) {
+    console.error('Error reading project ratings:', error)
+    return res.status(503).json({ error: 'Project ratings are temporarily unavailable.' })
+  }
+})
+
+app.post('/api/projects/:projectId/ratings', async (req, res) => {
+  const projectId = Number(req.params.projectId)
+  const rating = Number(req.body?.rating)
+
+  if (!PROJECT_IDS.includes(projectId) || !Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return res.status(400).json({ error: 'Invalid project rating.' })
+  }
+
+  try {
+    if (!redis) throw new Error('Upstash Redis configuration is missing.')
+
+    const { total, count } = projectRatingKeys(projectId)
+    const [updatedTotal, updatedCount] = await Promise.all([
+      redis.incrby(total, rating),
+      redis.incr(count),
+    ])
+    return res.status(201).json({
+      projectId,
+      count: Number(updatedCount),
+      average: Number((Number(updatedTotal) / Number(updatedCount)).toFixed(1)),
+    })
+  } catch (error) {
+    console.error('Error saving project rating:', error)
+    return res.status(503).json({ error: 'Project ratings are temporarily unavailable.' })
   }
 })
 

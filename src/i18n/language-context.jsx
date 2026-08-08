@@ -1,4 +1,3 @@
-import { decrypt } from 'dotenv'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 const translations = {
@@ -31,7 +30,7 @@ const translations = {
       ],
     },
     projects: {
-      title: 'معرض المشاريع', home: 'الصفحة الرئيسية', viewProject: 'عرض GitHub', openProject: 'فتح المشروع', rating: 'تقييم المشروع',
+      title: 'معرض المشاريع', home: 'الصفحة الرئيسية', viewProject: 'عرض GitHub', openProject: 'فتح المشروع', rating: 'تقييم المشروع', ratingAverage: 'متوسط التقييم', ratingCount: 'تقييم',
       items: [
         { id:1, title: 'نظام إدارة الملفات', description: 'واجهة تحكم متكاملة لإدارة وتتبع الملفات، توفر نظرة عامة على الحالة والتاريخ والحجم وأدوات الإجراءات.' },
         { id:2, title: 'منصة الأمان الرقمي', description: 'لوحة تحكم أمنية تهدف إلى حماية البيانات وتقديم أدوات تحليلية وخطط أمنية استباقية.' },
@@ -87,7 +86,7 @@ const translations = {
       ],
     },
     projects: {
-      title: 'Project Gallery', home: 'Home', viewProject: 'View on GitHub', openProject: 'Open project', rating: 'Project rating',
+      title: 'Project Gallery', home: 'Home', viewProject: 'View on GitHub', openProject: 'Open project', rating: 'Project rating', ratingAverage: 'average', ratingCount: 'ratings',
       items: [
         { id: 1, title: 'File Management System', description: 'A complete dashboard for managing and tracking files, including their status, history, size, and actions.' },
         { id: 2, title: 'Digital Security Platform', description: 'A security dashboard that protects data with analytical tools and proactive security planning.' },

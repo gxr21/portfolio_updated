@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import StarIcon from '@mui/icons-material/Star'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
 import NavBar from '../components/navbar/navbar.jsx'
@@ -24,22 +23,6 @@ const projectLinks = {
   11: 'https://github.com/gxr21/PHP.git',
   12: githubProfile,
   13: 'https://github.com/gxr21/OnlineAttSys.git',
-}
-
-const projectLiveLinks = {
-  1: 'https://sseencryptedfiles.onrender.com/',
-  2: '',
-  3: '',
-  4: '',
-  5: '',
-  6: '',
-  7: '',
-  8: '',
-  9: '',
-  10: '',
-  11: '',
-  12: '',
-  13: '',
 }
 
 const projectTechs = {
@@ -111,20 +94,57 @@ const projectTechs = {
 
 function Projects() {
   const { direction, t } = useLanguage()
-  const [ratings, setRatings] = useState(() => {
+  const [myRatings, setMyRatings] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('project-ratings')) || {}
+      return JSON.parse(localStorage.getItem('project-rating-votes-v2')) || {}
     } catch {
       return {}
     }
   })
+  const [ratingStats, setRatingStats] = useState({})
 
-  const setProjectRating = (projectId, rating) => {
-    setRatings((currentRatings) => {
-      const nextRatings = { ...currentRatings, [projectId]: rating }
-      localStorage.setItem('project-ratings', JSON.stringify(nextRatings))
-      return nextRatings
-    })
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadRatings() {
+      try {
+        const response = await fetch('/api/projects/ratings')
+        if (!response.ok) throw new Error('Unable to load project ratings')
+        const { ratings } = await response.json()
+        if (isMounted) setRatingStats(ratings)
+      } catch (error) {
+        console.error('Project ratings fetch error:', error)
+      }
+    }
+
+    void loadRatings()
+    return () => { isMounted = false }
+  }, [])
+
+  const setProjectRating = async (projectId, rating) => {
+    if (myRatings[projectId]) return
+
+    try {
+      const response = await fetch(`/api/projects/${projectId}/ratings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating }),
+      })
+      if (!response.ok) throw new Error('Unable to save project rating')
+
+      const result = await response.json()
+      setMyRatings((currentRatings) => {
+        const nextRatings = { ...currentRatings, [projectId]: rating }
+        localStorage.setItem('project-rating-votes-v2', JSON.stringify(nextRatings))
+        return nextRatings
+      })
+      setRatingStats((currentStats) => ({
+        ...currentStats,
+        [projectId]: { count: result.count, average: result.average },
+      }))
+    } catch (error) {
+      console.error('Project rating save error:', error)
+    }
   }
   
   return <main className="min-h-screen bg-surface" dir={direction}>
@@ -135,8 +155,8 @@ function Projects() {
         {t.projects.items.map((project, index) =>{
           const techs = projectTechs[project.id] || []
           const projectLink = projectLinks[project.id] || githubProfile
-          const liveProjectLink = projectLiveLinks[project.id] || projectLink
-          const rating = ratings[project.id] || 0
+          const rating = myRatings[project.id] || 0
+          const ratingStat = ratingStats[project.id] || { count: 0, average: 0 }
           return <motion.article variants={cardReveal} key={`project-${index}`} className="overflow-hidden rounded-2xl border bg-white  shadow transition-shadow hover:shadow-lg">
         <img src={images[index]} alt="" className="h-48 w-full object-fit" loading="lazy" />
         <div className="p-6">
@@ -145,10 +165,15 @@ function Projects() {
         <div className="mt-4 flex items-center gap-1" aria-label={t.projects.rating}>
           {[1, 2, 3, 4, 5].map((star) => {
             const Star = star <= rating ? StarIcon : StarBorderIcon
-            return <button key={`${project.id}-rating-${star}`} type="button" onClick={() => setProjectRating(project.id, star)} className="inline-flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors duration-300 hover:bg-gray-300 hover:text-primary" aria-label={`${t.projects.rating} ${star}`}>
+            return <button key={`${project.id}-rating-${star}`} type="button" onClick={() => setProjectRating(project.id, star)} disabled={Boolean(rating)} className="inline-flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors duration-300 hover:bg-gray-300 hover:text-primary disabled:cursor-default disabled:hover:bg-transparent" aria-label={`${t.projects.rating} ${star}`}>
               <Star fontSize="small" />
             </button>
           })}
+        </div>
+        <div className="mt-1 flex items-center gap-2 text-xs text-gray-500">
+          <span>{ratingStat.average.toFixed(1)} {t.projects.ratingAverage}</span>
+          <span aria-hidden="true">•</span>
+          <span>{ratingStat.count} {t.projects.ratingCount}</span>
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
           {techs.map((tech) => <span key={`${project.id}-${tech.name}`} className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-primary hover:text-white transition-colors duration-300">
