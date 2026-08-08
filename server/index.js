@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import path from 'path'
 import { Resend } from 'resend'
+import { Redis } from '@upstash/redis'
 import arcjet, { detectBot, shield, slidingWindow, validateEmail } from '@arcjet/node'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
@@ -23,6 +24,9 @@ const arcjetClient = process.env.ARCJET_KEY && process.env.ARCJET_KEY !== 'your-
   : null
 
 const resend = new Resend(process.env.RESEND_API_KEY)
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  ? Redis.fromEnv()
+  : null
 
 app.use(express.json({ limit: '20kb' }))
 app.use(express.static(path.join(process.cwd(), 'dist')))
@@ -66,12 +70,12 @@ function validateContact({ name, email, phone, message }) {
 }
 
 async function getVisitorCount(increment = false) {
-  const response = await fetch(`https://api.counterapi.dev/v1/ali-jalal-portfolio/visitors${increment ? '/up' : ''}`)
-  if (!response.ok) throw new Error(`Counter service returned ${response.status}`)
-  const data = await response.json()
-  const count = Number(data.count ?? data.data ?? data.value)
-  if (!Number.isFinite(count)) throw new Error('Counter service returned an invalid count')
-  return count
+  if (!redis) throw new Error('Upstash Redis configuration is missing.')
+
+  if (increment) return redis.incr('portfolio:visitor-count')
+
+  const count = await redis.get('portfolio:visitor-count')
+  return Number(count || 0)
 }
 
 app.get('/api/visitors', async (req, res) => {
