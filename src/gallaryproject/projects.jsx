@@ -150,37 +150,37 @@ function Projects() {
   return <main className="min-h-screen bg-surface" dir={direction}>
     <NavBar />
     <motion.section variants={scrollReveal} initial="hidden" whileInView="visible" viewport={scrollViewport} className="container mx-auto px-4 py-20">
-      <h1 className="text-3xl font-bold text-black">{t.projects.title}</h1>
+      <h1 className="text-3xl font-bold text-text-heading">{t.projects.title}</h1>
       <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={scrollViewport} className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {t.projects.items.map((project, index) =>{
           const techs = projectTechs[project.id] || []
           const projectLink = projectLinks[project.id] || githubProfile
           const rating = myRatings[project.id] || 0
           const ratingStat = ratingStats[project.id] || { count: 0, average: 0 }
-          return <motion.article variants={cardReveal} key={`project-${index}`} className="overflow-hidden rounded-2xl border bg-white  shadow transition-shadow hover:shadow-lg">
+          return <motion.article variants={cardReveal} key={`project-${index}`} className="overflow-hidden rounded-2xl border border-border bg-card shadow transition-shadow hover:shadow-lg">
         <img src={images[index]} alt="" className="h-48 w-full object-fit" loading="lazy" />
         <div className="p-6">
           <h2 className="text-xl font-bold">{project.title}</h2>
-        <p className="mt-4 leading-7 text-gray-600">{project.description}</p>
+        <p className="mt-4 leading-7 text-text-body">{project.description}</p>
         <div className="mt-4 flex items-center gap-1" aria-label={t.projects.rating}>
           {[1, 2, 3, 4, 5].map((star) => {
             const Star = star <= rating ? StarIcon : StarBorderIcon
-            return <button key={`${project.id}-rating-${star}`} type="button" onClick={() => setProjectRating(project.id, star)} disabled={Boolean(rating)} className="inline-flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors duration-300 hover:bg-gray-300 hover:text-primary disabled:cursor-default disabled:hover:bg-transparent" aria-label={`${t.projects.rating} ${star}`}>
+            return <button key={`${project.id}-rating-${star}`} type="button" onClick={() => setProjectRating(project.id, star)} disabled={Boolean(rating)} className="inline-flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors duration-300 hover:bg-surface-bright hover:text-primary disabled:cursor-default disabled:hover:bg-transparent" aria-label={`${t.projects.rating} ${star}`}>
               <Star fontSize="small" />
             </button>
           })}
         </div>
-        <div className="mt-1 flex items-center gap-2 text-xs text-gray-500">
+        <div className="mt-1 flex items-center gap-2 text-xs text-text-body">
           <span>{ratingStat.average.toFixed(1)} {t.projects.ratingAverage}</span>
           <span aria-hidden="true">•</span>
           <span>{ratingStat.count} {t.projects.ratingCount}</span>
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
-          {techs.map((tech) => <span key={`${project.id}-${tech.name}`} className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-primary hover:text-white transition-colors duration-300">
+          {techs.map((tech) => <span key={`${project.id}-${tech.name}`} className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-bright px-3 py-1 text-xs font-semibold text-text-heading hover:bg-primary hover:text-white transition-colors duration-300">
             <img src={tech.icon} alt="" className="h-5 w-5 object-contain " loading="lazy" />
             {tech.name}
           </span>)}
-          <a href={projectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-700 transition-colors duration-300 hover:bg-primary hover:text-white" aria-label={t.projects.viewProject} title={t.projects.viewProject}>
+          <a href={projectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface-bright text-text-heading transition-colors duration-300 hover:bg-primary hover:text-white" aria-label={t.projects.viewProject} title={t.projects.viewProject}>
             <GitHubIcon fontSize="small" />
           </a>
           {/* <a href={liveProjectLink} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-gray-700 transition-colors duration-300 hover:bg-primary hover:text-white" aria-label={t.projects.openProject} title={t.projects.openProject}>

@@ -4,6 +4,8 @@
   --color-primary: #0145F2;
   --color-surface: #FBF9FB;
   --color-surface-bright: #EDF1F5;
+  --color-card: #FFFFFF;
+  --color-border: #E5E7EB;
   --color-text-heading: #000000;
   --color-text-body: #4A4A4A;
 
@@ -16,6 +18,26 @@
   --radius-container: 1.5rem;
 }
 
+:root {
+  --color-primary: #0145F2;
+  --color-surface: #FBF9FB;
+  --color-surface-bright: #EDF1F5;
+  --color-card: #FFFFFF;
+  --color-border: #E5E7EB;
+  --color-text-heading: #000000;
+  --color-text-body: #4A4A4A;
+}
+
+:root[data-theme="dark"] {
+  --color-primary: #6EA8FF;
+  --color-surface: #0F172A;
+  --color-surface-bright: #172033;
+  --color-card: #111827;
+  --color-border: #273449;
+  --color-text-heading: #F8FAFC;
+  --color-text-body: #CBD5E1;
+}
+
 @utility container {
   margin-inline: auto;
   padding-inline: 1rem;
@@ -24,7 +46,7 @@
 
 @layer base {
   body {
-    @apply bg-surface text-text-body font-tajawal antialiased;
+    @apply bg-surface text-text-body font-tajawal antialiased transition-colors duration-300;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply text-text-heading font-bold;

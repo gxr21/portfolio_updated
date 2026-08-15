@@ -84,7 +84,7 @@ function ContactForm() {
   ]
 
   return (
-    <form onSubmit={submit} noValidate className="mx-auto max-w-2xl rounded-2xl border border-gray-200 bg-surface-bright p-8" dir={direction}>
+    <form onSubmit={submit} noValidate className="mx-auto max-w-2xl rounded-2xl border border-border bg-surface-bright p-8" dir={direction}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {fields.map(([id, name, type, label, placeholder]) => (
           <div key={name} className={name === 'message' ? 'md:col-span-2' : ''}>
@@ -101,7 +101,7 @@ function ContactForm() {
                 onChange={change}
                 placeholder={placeholder}
                 disabled={isSubmitting}
-                className="w-full rounded-lg border border-gray-300 bg-surface px-4 py-2 focus:ring-2 focus:ring-primary focus:outline-none disabled:bg-gray-100"
+                className="w-full rounded-lg border border-border bg-surface px-4 py-2 text-text-heading placeholder:text-text-body/60 focus:ring-2 focus:ring-primary focus:outline-none disabled:bg-card"
               />
             ) : (
               <input
@@ -112,7 +112,7 @@ function ContactForm() {
                 onChange={change}
                 placeholder={placeholder}
                 disabled={isSubmitting}
-                className="w-full rounded-lg border border-gray-300 bg-surface px-4 py-2 focus:ring-2 focus:ring-primary focus:outline-none disabled:bg-gray-100"
+                className="w-full rounded-lg border border-border bg-surface px-4 py-2 text-text-heading placeholder:text-text-body/60 focus:ring-2 focus:ring-primary focus:outline-none disabled:bg-card"
               />
             )}
 
