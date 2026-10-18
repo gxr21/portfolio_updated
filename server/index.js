@@ -6,7 +6,6 @@ import path from 'path'
 import multer from 'multer'
 import { Resend } from 'resend'
 import { Redis } from '@upstash/redis'
-import arcjet, { detectBot, shield, slidingWindow, validateEmail } from '@arcjet/node'
 import { fileURLToPath } from 'url'
 import cors from 'cors'
 // إعداد ملف .env قبل أي شيء
@@ -14,8 +13,13 @@ dotenv.config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.
 const app = express()
 const PORT = process.env.PORT || 5000
 const requestLog = new Map()
-const arcjetClient = process.env.ARCJET_KEY && process.env.ARCJET_KEY !== 'your-arcjet-site-key'
-  ? arcjet({
+async function createArcjetClient() {
+  if (!process.env.ARCJET_KEY || process.env.ARCJET_KEY === 'your-arcjet-site-key') return null
+
+  // On Windows, @arcjet/analyze-wasm can fail to resolve its "_." folder, so a load failure must not stop the server.
+  try {
+    const { default: arcjet, detectBot, shield, slidingWindow, validateEmail } = await import('@arcjet/node')
+    return arcjet({
       key: process.env.ARCJET_KEY,
       rules: [
         shield({ mode: 'LIVE' }),
@@ -24,7 +28,13 @@ const arcjetClient = process.env.ARCJET_KEY && process.env.ARCJET_KEY !== 'your-
         slidingWindow({ mode: 'LIVE', interval: '10m', max: 5 }),
       ],
     })
-  : null
+  } catch (error) {
+    console.error('Arcjet could not be loaded:', error.code || error.message)
+    return null
+  }
+}
+
+const arcjetClient = await createArcjetClient()
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
