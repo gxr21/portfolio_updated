@@ -11,6 +11,8 @@ function NavBar() {
     { name: t.nav.services, href: '/#services' },
     { name: t.nav.projects, href: '/#projects' },
     { name: t.nav.certificates, href: '/#certificate' },
+    { name: t.nav.courses, href: '/courses' },
+    { name: t.nav.experience, href: '/experience' },
   ]
 
   return (

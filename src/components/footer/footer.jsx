@@ -15,7 +15,7 @@ const socialLinks = [
 
 function Footer() {
   const { direction, t } = useLanguage()
-  const links = [[t.nav.home, '/#home'], [t.nav.contact, '/#contact'], [t.nav.projects, '/projects'], [t.nav.services, '/services'], [t.nav.certificates, '/#certificate']]
+  const links = [[t.nav.home, '/#home'], [t.nav.contact, '/#contact'], [t.nav.projects, '/projects'], [t.nav.services, '/services'], [t.nav.certificates, '/#certificate'], [t.nav.courses, '/courses'], [t.nav.experience, '/experience']]
   return <footer className="rounded-t-4xl bg-[#1e1e1f] py-8 text-center text-white" dir={direction}>
     <div className="container mx-auto px-4">
      <div className="flex flex-col items-center justify-between gap-4 md:flex-row">

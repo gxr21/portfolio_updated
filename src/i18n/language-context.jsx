@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 const translations = {
   ar: {
-    nav: { home: 'الرئيسية', services: 'خدماتي', projects: 'مشاريعي', certificates: 'شهاداتي', contact: 'اتصل بي', switchLanguage: 'English' },
+    nav: { home: 'الرئيسية', services: 'خدماتي', projects: 'مشاريعي', certificates: 'شهاداتي', courses: 'الكورسات', experience: 'التجربة', contact: 'اتصل بي', switchLanguage: 'English' },
     common: { learnMore: 'تعرّف على المزيد', backHome: 'العودة إلى الصفحة الرئيسية', loading: 'جارِ التحميل' },
     landing: {
       name: 'علي جلال', role: 'مطور ويب ومصمم واجهات المستخدم',
@@ -48,6 +48,25 @@ const translations = {
         
       ],
     },
+    courses: {
+      title: 'الكورسات', empty: 'لا توجد حاليا كورسات مرفوعة', open: 'فتح الكورس', back: 'العودة إلى الكورسات',
+      upload: 'رفع المقاطع', uploading: 'جارِ الرفع...', uploadKey: 'رمز الرفع', uploadKeyPlaceholder: 'أدخل رمز الرفع',
+      uploadSuccess: 'تم رفع المقطع بنجاح.', uploadFailed: 'تعذر رفع المقطع. حاول مرة أخرى.',
+      uploadUnauthorized: 'رمز الرفع غير صحيح.', uploadUnavailable: 'الرفع غير مفعّل حالياً. أضف COURSE_UPLOAD_KEY في إعدادات الاستضافة.',
+      invalidVideo: 'يُقبل فقط مقطع فيديو بصيغة MP4 أو WebM أو MOV.', fileTooLarge: 'حجم المقطع أكبر من الحد المسموح (100 ميغابايت).',
+      items: [
+        { id: 'cpp', title: 'كورس C++ للمبتدئين', description: 'أساسيات لغة C++ من الصفر: المتغيرات، الشروط، الحلقات، وأول البرامج.' },
+        { id: 'javascript', title: 'كورس جافاسكربت للمبتدئين', description: 'مدخل عملي إلى جافاسكربت لفهم الصفحة التفاعلية وكتابة أول السكربتات.' },
+        { id: 'python', title: 'كورس بايثون للمبتدئين', description: 'خطوات أولى في بايثون بأسلوب بسيط، من الأساسيات حتى كتابة برامج صغيرة.' },
+      ],
+    },
+    experience: {
+      title: 'التجربة', intro: 'مواقع يمكن تصفحها وتجربتها مباشرة.', browse: 'تصفح الموقع', openSite: 'فتح في نافذة جديدة',
+      frameHint: 'إذا لم يظهر الموقع داخل الإطار، افتحه في نافذة جديدة.',
+      items: [
+        { id: 'academic-horizon', title: 'AcademicHorizon', description: 'منصة الأفق الأكاديمي، موقع تعليمي يمكن تصفحه وتجربته من هنا.', url: 'https://academic-horizon-frontend.onrender.com' },
+      ],
+    },
     form: {
       name: 'الاسم', email: 'البريد الإلكتروني', phone: 'الهاتف', message: 'الرسالة', namePlaceholder: 'اسمك الكريم', messagePlaceholder: 'اكتب رسالتك هنا...',
       submit: 'إرسال الرسالة', sending: 'جارِ الإرسال...', success: 'تم إرسال رسالتك بنجاح!', failed: 'حدث خطأ أثناء الإرسال. حاول مرة أخرى.',
@@ -58,7 +77,7 @@ const translations = {
     maintenance: { label: 'وضع الصيانة', title: 'الموقع قيد الصيانة', text: 'نعمل حاليًا على تحسين الموقع وإضافة لمسات جديدة. سنعود إليك قريبًا.', thanks: 'شكرًا لصبرك وتفهمك' },
   },
   en: {
-    nav: { home: 'Home', services: 'Services', projects: 'Projects', certificates: 'Certificates', contact: 'Contact', switchLanguage: 'العربية' },
+    nav: { home: 'Home', services: 'Services', projects: 'Projects', certificates: 'Certificates', courses: 'Courses', experience: 'Experience', contact: 'Contact', switchLanguage: 'العربية' },
     common: { learnMore: 'Learn more', backHome: 'Back to home', loading: 'Loading' },
     landing: {
       name: 'Ali Jalal', role: 'Web Developer & UI Designer',
@@ -101,6 +120,25 @@ const translations = {
         { id: 11, title: 'Php Learning Website' , description:'A website for learning PHP in a beautiful, organized, and easy-to-understand style, containing practical examples and projects to apply what has been learned.'},
         { id: 12, title: 'Calculator' , description:'A simple and easy-to-use calculator that allows users to perform basic arithmetic operations quickly and efficiently.'},
         { id: 13, title: 'Absence' , description:'An interface to display student absences, track their attendance and absence, send alerts to students and their parents, monitor student performance, and provide detailed reports on attendance, absence, and performance.'}
+      ],
+    },
+    courses: {
+      title: 'Courses', empty: 'No courses have been uploaded yet', open: 'Open course', back: 'Back to courses',
+      upload: 'Upload lessons', uploading: 'Uploading...', uploadKey: 'Upload key', uploadKeyPlaceholder: 'Enter the upload key',
+      uploadSuccess: 'The lesson was uploaded.', uploadFailed: 'The lesson could not be uploaded. Please try again.',
+      uploadUnauthorized: 'The upload key is incorrect.', uploadUnavailable: 'Uploads are not enabled yet. Add COURSE_UPLOAD_KEY in the hosting settings.',
+      invalidVideo: 'Only an MP4, WebM, or MOV video is accepted.', fileTooLarge: 'The video is larger than the 100 MB limit.',
+      items: [
+        { id: 'cpp', title: 'C++ for Beginners', description: 'C++ from the ground up: variables, conditions, loops, and your first programs.' },
+        { id: 'javascript', title: 'JavaScript for Beginners', description: 'A practical introduction to JavaScript for interactive pages and your first scripts.' },
+        { id: 'python', title: 'Python for Beginners', description: 'First steps in Python, from the basics through writing small programs.' },
+      ],
+    },
+    experience: {
+      title: 'Experience', intro: 'Websites you can browse and try directly.', browse: 'Browse the website', openSite: 'Open in a new window',
+      frameHint: 'If the website does not appear in the frame, open it in a new window.',
+      items: [
+        { id: 'academic-horizon', title: 'AcademicHorizon', description: 'Academic Horizon, an educational website you can browse and try from here.', url: 'https://academic-horizon-frontend.onrender.com' },
       ],
     },
     form: {

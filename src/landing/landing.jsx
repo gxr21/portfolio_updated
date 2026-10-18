@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import NavBar from '../components/navbar/navbar.jsx'
 import Skills from '../components/skills/skill.jsx'
@@ -16,6 +17,22 @@ const certificates = [
 
 function LandingPage() {
   const { direction, t } = useLanguage()
+  const [hasCourseLessons, setHasCourseLessons] = useState(false)
+
+  useEffect(() => {
+    let isMounted = true
+    async function loadLessons() {
+      try {
+        const responses = await Promise.all(t.courses.items.map((course) => fetch(`/api/courses/${course.id}/lessons`)))
+        const payloads = await Promise.all(responses.map((response) => (response.ok ? response.json() : { lessons: [] })))
+        if (isMounted) setHasCourseLessons(payloads.some((payload) => payload.lessons?.length))
+      } catch {
+        if (isMounted) setHasCourseLessons(false)
+      }
+    }
+    void loadLessons()
+    return () => { isMounted = false }
+  }, [t.courses.items])
 
   return <><NavBar /><main className="min-h-screen bg-surface" dir={direction}>
     <motion.section id="home" variants={scrollReveal} initial="hidden" whileInView="visible" viewport={scrollViewport} className="container mx-auto flex flex-col items-center justify-between px-4 py-20 scroll-mt-20 md:flex-row">
@@ -30,6 +47,29 @@ function LandingPage() {
     <motion.section id="projects" variants={scrollReveal} initial="hidden" whileInView="visible" viewport={scrollViewport} className="container mx-auto px-4 py-20 scroll-mt-20"><h2 className="mb-8 text-3xl font-bold text-text-heading">{t.landing.projectsTitle}</h2><div className="overflow-hidden rounded-[2.25rem] bg-[#1e1e1f] px-6 py-8 text-zinc-300 md:px-16 md:py-16"><motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={scrollViewport} className="grid grid-cols-1 md:grid-cols-2">{t.landing.featuredProjects.map((project, index) => <motion.article variants={cardReveal} key={`featured-project-${index}`} className={`px-4 py-8 ${index === 0 ? 'border-b border-zinc-700/80 md:border-b-0 md:border-e md:px-12 md:py-0' : index === 1 ? 'border-b border-zinc-700/80 md:border-b-0 md:px-12 md:py-0' : 'md:col-span-2 md:mx-12 md:mt-4 md:border-t md:border-zinc-700/80 md:pt-12'}`}><h3 className="mb-4 text-sm font-bold text-primary">{project.title}</h3><p className="mx-auto max-w-md leading-7">{project.description}</p><a href="/projects" className="mt-6 inline-flex text-sm text-primary transition hover:text-blue-300">{t.common.learnMore} <span className="px-2" aria-hidden="true">←</span></a></motion.article>)}</motion.div></div></motion.section>
 
     <motion.section id="certificate" variants={scrollReveal} initial="hidden" whileInView="visible" viewport={scrollViewport} className="container mx-auto px-4 py-20 scroll-mt-20"><h2 className="mb-8 text-3xl font-bold text-text-heading">{t.landing.certificatesTitle}</h2><motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={scrollViewport} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">{certificates.map(([image, title], index) => <motion.article variants={cardReveal} key={`certificate-${index}`} className="flex flex-col items-center justify-center gap-4 rounded-lg border border-border bg-card p-6 text-center shadow transition-shadow hover:shadow-lg"><img src={image} alt={title} className="h-32 w-32 object-contain" /><h3>{title}</h3></motion.article>)}</motion.div></motion.section>
+
+    <motion.section id="courses" variants={scrollReveal} initial="hidden" whileInView="visible" viewport={scrollViewport} className="container mx-auto px-4 py-20 scroll-mt-20">
+      <h2 className="mb-8 text-3xl font-bold text-text-heading">{t.courses.title}</h2>
+      {!hasCourseLessons && <p className="rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center text-xl font-bold text-text-heading">{t.courses.empty}</p>}
+      <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={scrollViewport} className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
+        {t.courses.items.map((course) => <motion.article variants={cardReveal} key={`landing-course-${course.id}`} className="rounded-lg border border-border bg-card p-6 shadow transition-shadow hover:shadow-lg">
+          <h3 className="mb-4 text-xl font-bold">{course.title}</h3>
+          <p className="text-text-body">{course.description}</p>
+          <a href={`/courses/${course.id}`} className="mt-4 inline-block text-primary hover:underline">{t.courses.open}</a>
+        </motion.article>)}
+      </motion.div>
+    </motion.section>
+
+    <motion.section id="experience" variants={scrollReveal} initial="hidden" whileInView="visible" viewport={scrollViewport} className="container mx-auto px-4 py-20 scroll-mt-20">
+      <h2 className="mb-8 text-3xl font-bold text-text-heading">{t.experience.title}</h2>
+      <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={scrollViewport} className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {t.experience.items.map((site) => <motion.article variants={cardReveal} key={`landing-experience-${site.id}`} className="rounded-lg border border-border bg-card p-6 shadow transition-shadow hover:shadow-lg">
+          <h3 className="mb-4 text-xl font-bold">{site.title}</h3>
+          <p className="text-text-body">{site.description}</p>
+          <a href="/experience" className="mt-4 inline-block text-primary hover:underline">{t.experience.browse}</a>
+        </motion.article>)}
+      </motion.div>
+    </motion.section>
 
     <motion.section id="contact" variants={scrollReveal} initial="hidden" whileInView="visible" viewport={scrollViewport} className="container mx-auto grid grid-cols-1 gap-10 px-4 py-20 scroll-mt-20 lg:grid-cols-2"><div><h2 className="text-4xl font-bold text-primary md:text-5xl">{t.landing.contactTitle}</h2><p className="mt-4 text-lg leading-8 text-text-body">{t.landing.contactText}</p></div><ContactForm /></motion.section>
     <Footer />

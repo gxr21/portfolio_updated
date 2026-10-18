@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import LandingPage from './landing/landing.jsx'
 import Projects from './gallaryproject/projects.jsx'
 import Services from './services/services.jsx'
+import CoursesPage from './courses/courses.jsx'
+import CoursePage from './courses/course-page.jsx'
+import ExperiencePage from './experience/experience.jsx'
 import Maintenance from './maintenance/maintenance.jsx'
 import LoadingScreen from './components/loading-screen/loading-screen.jsx'
 import { useLanguage } from './i18n/language-context.jsx'
@@ -29,7 +32,8 @@ function App() {
   }, [isNavigating, isWelcomeVisible, pendingHash, path])
 
   useEffect(() => {
-    const pageNames = { '/': t.nav.home, '/projects': t.projects.title, '/services': t.services.title }
+    const pageNames = { '/': t.nav.home, '/projects': t.projects.title, '/services': t.services.title, '/courses': t.courses.title, '/experience': t.experience.title }
+    t.courses.items.forEach((course) => { pageNames[`/courses/${course.id}`] = course.title })
     const handleNavigation = (event) => {
       const link = event.target.closest('a')
       if (!link || link.target === '_blank' || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
@@ -60,10 +64,18 @@ function App() {
   if (isMaintenanceMode) return <Maintenance />
   if (isWelcomeVisible) return <LoadingScreen mode="welcome" />
   if (isNavigating) return <LoadingScreen pageName={nextPage} />
+  const course = t.courses.items.find((item) => path === `/courses/${item.id}`)
+
   if (path === '/projects') {
     content = <Projects />
   } else if (path === '/services') {
     content = <Services />
+  } else if (path === '/courses') {
+    content = <CoursesPage />
+  } else if (course) {
+    content = <CoursePage courseId={course.id} />
+  } else if (path === '/experience') {
+    content = <ExperiencePage />
   }
 
   return content

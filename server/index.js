@@ -1,6 +1,9 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import fs from 'fs'
+import crypto from 'crypto'
 import path from 'path'
+import multer from 'multer'
 import { Resend } from 'resend'
 import { Redis } from '@upstash/redis'
 import arcjet, { detectBot, shield, slidingWindow, validateEmail } from '@arcjet/node'
@@ -30,6 +33,7 @@ const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_RE
 
 app.use(express.json({ limit: '20kb' }))
 app.use(express.static(path.join(process.cwd(), 'dist')))
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), { index: false, dotfiles: 'deny' }))
 
 const allowedOrigins = [
   'http://localhost:3000',
@@ -220,6 +224,96 @@ ${message.trim()}
     console.error('Error sending email:', error)
     return res.status(500).json({ success: false, error: 'Unable to send the message.' })
   }
+})
+
+const COURSE_IDS = ['cpp', 'javascript', 'python']
+const uploadsRoot = path.join(process.cwd(), 'uploads', 'courses')
+const videoUpload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, cb) {
+      const directory = path.join(uploadsRoot, req.params.courseId)
+      fs.mkdirSync(directory, { recursive: true })
+      cb(null, directory)
+    },
+    filename(req, file, cb) {
+      cb(null, `${Date.now()}-${crypto.randomBytes(4).toString('hex')}${path.extname(file.originalname).toLowerCase()}`)
+    },
+  }),
+  limits: { fileSize: 100 * 1024 * 1024 },
+  fileFilter(req, file, cb) {
+    const extension = path.extname(file.originalname).toLowerCase()
+    const allowedExtension = ['.mp4', '.webm', '.mov'].includes(extension)
+    const allowedType = ['video/mp4', 'video/webm', 'video/quicktime', 'application/octet-stream', ''].includes(file.mimetype)
+    if (!allowedExtension || !allowedType) {
+      cb(new Error('invalid-video'))
+      return
+    }
+    cb(null, true)
+  },
+})
+
+function lessonsFile(courseId) {
+  return path.join(uploadsRoot, courseId, 'lessons.json')
+}
+
+function readLessons(courseId) {
+  try {
+    return JSON.parse(fs.readFileSync(lessonsFile(courseId), 'utf8'))
+  } catch {
+    return []
+  }
+}
+
+function writeLessons(courseId, lessons) {
+  const file = lessonsFile(courseId)
+  fs.mkdirSync(path.dirname(file), { recursive: true })
+  fs.writeFileSync(file, JSON.stringify(lessons, null, 2))
+}
+
+function isUploadAuthorized(req) {
+  const expected = process.env.COURSE_UPLOAD_KEY
+  const provided = req.get('x-upload-key') || ''
+  if (!expected || !provided) return false
+  const expectedBuffer = Buffer.from(expected)
+  const providedBuffer = Buffer.from(provided)
+  if (expectedBuffer.length !== providedBuffer.length) return false
+  return crypto.timingSafeEqual(expectedBuffer, providedBuffer)
+}
+
+app.get('/api/courses/:courseId/lessons', (req, res) => {
+  if (!COURSE_IDS.includes(req.params.courseId)) return res.status(404).json({ error: 'unknown-course' })
+  return res.json({ lessons: readLessons(req.params.courseId) })
+})
+
+app.post('/api/courses/:courseId/lessons', (req, res) => {
+  if (!COURSE_IDS.includes(req.params.courseId)) return res.status(404).json({ error: 'unknown-course' })
+  if (!process.env.COURSE_UPLOAD_KEY) return res.status(503).json({ error: 'upload-unavailable' })
+  if (!isUploadAuthorized(req)) return res.status(401).json({ error: 'unauthorized' })
+
+  videoUpload.single('video')(req, res, (error) => {
+    if (error) {
+      const code = error.code === 'LIMIT_FILE_SIZE' ? 'file-too-large' : error.message === 'invalid-video' ? 'invalid-video' : 'upload-failed'
+      return res.status(400).json({ error: code })
+    }
+    if (!req.file) return res.status(400).json({ error: 'invalid-video' })
+
+    const title = path.basename(req.file.originalname, path.extname(req.file.originalname)).replace(/[^\p{L}\p{N}\s._-]/gu, '').trim().slice(0, 120) || 'مقطع'
+    const lesson = {
+      id: crypto.randomBytes(8).toString('hex'),
+      title,
+      url: `/uploads/courses/${req.params.courseId}/${req.file.filename}`,
+      uploadedAt: new Date().toISOString(),
+    }
+
+    try {
+      writeLessons(req.params.courseId, [...readLessons(req.params.courseId), lesson])
+      return res.status(201).json({ lesson })
+    } catch (writeError) {
+      fs.unlink(req.file.path, () => {})
+      console.error('Error saving course lesson:', writeError)
+      return res.status(500).json({ error: 'upload-failed' })
+    }
+  })
 })
 
 app.get('*', (req, res) => res.sendFile(path.join(process.cwd(), 'dist', 'index.html')))
