@@ -10,6 +10,7 @@ import LoadingScreen from './components/loading-screen/loading-screen.jsx'
 import { useLanguage } from './i18n/language-context.jsx'
 
 const isMaintenanceMode = false;
+const pagesWithOwnLoader = ['/courses', '/experience']
 function App() {
   const { t } = useLanguage()
   const [path, setPath] = useState(() => window.location.pathname.replace(/\/$/, '') || '/')
@@ -49,7 +50,15 @@ function App() {
         return
       }
 
-      event.preventDefault(); setNextPage(pageNames[targetPath]); setNextPath(targetPath); setIsNavigating(true)
+      event.preventDefault()
+      if (pagesWithOwnLoader.includes(targetPath)) {
+        window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`)
+        window.scrollTo(0, 0)
+        setPath(targetPath)
+        setPendingHash(targetUrl.hash)
+        return
+      }
+      setNextPage(pageNames[targetPath]); setNextPath(targetPath); setIsNavigating(true)
       window.setTimeout(() => { window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`); setPath(targetPath); setPendingHash(targetUrl.hash); setIsNavigating(false) }, 900)
     }
     const handlePopState = () => {

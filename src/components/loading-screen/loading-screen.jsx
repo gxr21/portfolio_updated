@@ -57,15 +57,6 @@ function ServicesVisual() {
   </div>
 }
 
-function CoursesVisual() {
-  return <div className="flex h-44 w-56 flex-col justify-center gap-3 rounded-2xl border border-border bg-card p-5 text-start font-mono shadow-lg" dir="ltr">
-    <div className="flex gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-red-400" /><span className="h-2.5 w-2.5 rounded-full bg-yellow-400" /><span className="h-2.5 w-2.5 rounded-full bg-green-400" /></div>
-    {[72, 52, 86, 40].map((width, index) => <motion.span key={index} className="h-2.5 rounded-full bg-primary/70" style={{ marginInlineStart: index % 2 ? 16 : 0 }}
-      animate={{ width: [0, width, width] }} transition={{ ...loop, duration: 1.8, delay: index * 0.2, times: [0, 0.5, 1] }} />)}
-    <motion.span className="h-4 w-1.5 bg-primary" animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} />
-  </div>
-}
-
 function CourseVisual() {
   return <div className="relative flex h-44 w-44 items-center justify-center">
     <svg viewBox="0 0 100 100" className="absolute h-40 w-40 -rotate-90" aria-hidden="true">
@@ -79,29 +70,11 @@ function CourseVisual() {
   </div>
 }
 
-function ExperienceVisual() {
-  return <div className="h-40 w-60 overflow-hidden rounded-2xl border border-border bg-card shadow-lg" dir="ltr">
-    <div className="flex items-center gap-2 border-b border-border bg-surface-bright px-3 py-2">
-      <div className="flex gap-1"><span className="h-2 w-2 rounded-full bg-red-400" /><span className="h-2 w-2 rounded-full bg-yellow-400" /><span className="h-2 w-2 rounded-full bg-green-400" /></div>
-      <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-card">
-        <motion.span className="absolute inset-y-0 start-0 rounded-full bg-primary" animate={{ width: ['0%', '100%'] }} transition={{ repeat: Infinity, duration: 1.4, ease: 'easeInOut' }} />
-      </div>
-    </div>
-    <div className="space-y-2.5 p-4">
-      <motion.div className="h-12 rounded-lg bg-primary/20" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ ...loop, duration: 1.4 }} />
-      <motion.div className="h-2.5 w-3/4 rounded-full bg-primary/30" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ ...loop, duration: 1.4, delay: 0.2 }} />
-      <motion.div className="h-2.5 w-1/2 rounded-full bg-primary/30" animate={{ opacity: [0.4, 1, 0.4] }} transition={{ ...loop, duration: 1.4, delay: 0.4 }} />
-    </div>
-  </div>
-}
-
 function visualFor(mode, path = '/') {
   if (mode === 'welcome') return <WelcomeVisual />
   if (path === '/projects') return <ProjectsVisual />
   if (path === '/services') return <ServicesVisual />
-  if (path === '/courses') return <CoursesVisual />
   if (path.startsWith('/courses/')) return <CourseVisual />
-  if (path === '/experience') return <ExperienceVisual />
   return <HomeVisual />
 }
 
