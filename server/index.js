@@ -237,6 +237,8 @@ ${message.trim()}
 })
 
 const COURSE_IDS = ['cpp', 'javascript', 'python']
+// Render always sets RENDER=true; NODE_ENV is not set there by default.
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER === 'true'
 const uploadsRoot = path.join(process.cwd(), 'public', 'course-lessons')
 const videoUpload = multer({
   storage: multer.diskStorage({
@@ -249,7 +251,8 @@ const videoUpload = multer({
       cb(null, `${Date.now()}-${crypto.randomBytes(4).toString('hex')}${path.extname(file.originalname).toLowerCase()}`)
     },
   }),
-  limits: { fileSize: 100 * 1024 * 1024 },
+  // Lessons are committed to GitHub, which rejects files over 100 MB.
+  limits: { fileSize: 90 * 1024 * 1024 },
   fileFilter(req, file, cb) {
     const extension = path.extname(file.originalname).toLowerCase()
     const allowedExtension = ['.mp4', '.webm', '.mov'].includes(extension)
@@ -269,7 +272,7 @@ function lessonsFile(courseId) {
 function readLessons(courseId) {
   const publishedFile = path.join(process.cwd(), 'dist', 'course-lessons', courseId, 'lessons.json')
   const sourceFile = lessonsFile(courseId)
-  const file = process.env.NODE_ENV === 'production' && fs.existsSync(publishedFile) ? publishedFile : sourceFile
+  const file = isProduction && fs.existsSync(publishedFile) ? publishedFile : sourceFile
   try {
     return JSON.parse(fs.readFileSync(file, 'utf8'))
   } catch {
@@ -283,26 +286,14 @@ function writeLessons(courseId, lessons) {
   fs.writeFileSync(file, JSON.stringify(lessons, null, 2))
 }
 
-function isUploadAuthorized(req) {
-  const expected = process.env.COURSE_UPLOAD_KEY
-  const provided = req.get('x-upload-key') || ''
-  if (!expected || !provided) return false
-  const expectedBuffer = Buffer.from(expected)
-  const providedBuffer = Buffer.from(provided)
-  if (expectedBuffer.length !== providedBuffer.length) return false
-  return crypto.timingSafeEqual(expectedBuffer, providedBuffer)
-}
-
 app.get('/api/courses/:courseId/lessons', (req, res) => {
   if (!COURSE_IDS.includes(req.params.courseId)) return res.status(404).json({ error: 'unknown-course' })
   return res.json({ lessons: readLessons(req.params.courseId) })
 })
 
 app.post('/api/courses/:courseId/lessons', (req, res) => {
-  if (process.env.NODE_ENV === 'production') return res.status(403).json({ error: 'upload-unavailable' })
+  if (isProduction) return res.status(403).json({ error: 'upload-unavailable' })
   if (!COURSE_IDS.includes(req.params.courseId)) return res.status(404).json({ error: 'unknown-course' })
-  if (!process.env.COURSE_UPLOAD_KEY) return res.status(503).json({ error: 'upload-unavailable' })
-  if (!isUploadAuthorized(req)) return res.status(401).json({ error: 'unauthorized' })
 
   videoUpload.single('video')(req, res, (error) => {
     if (error) {

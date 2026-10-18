@@ -50,10 +50,10 @@ const translations = {
     },
     courses: {
       title: 'الكورسات', empty: 'لا توجد كورسات حالية', open: 'فتح الكورس', back: 'العودة إلى الكورسات', loading: 'جارِ تحميل المحتوى التعليمي',
-      upload: 'رفع المقاطع', uploading: 'جارِ الرفع...', uploadKey: 'رمز الرفع', uploadKeyPlaceholder: 'أدخل رمز الرفع',
+      upload: 'رفع المقاطع', uploading: 'جارِ الرفع...',
       uploadSuccess: 'تم رفع المقطع بنجاح.', uploadFailed: 'تعذر رفع المقطع. حاول مرة أخرى.',
-      uploadUnauthorized: 'رمز الرفع غير صحيح.', uploadUnavailable: 'الرفع غير مفعّل حالياً. أضف COURSE_UPLOAD_KEY في إعدادات الاستضافة.',
-      invalidVideo: 'يُقبل فقط مقطع فيديو بصيغة MP4 أو WebM أو MOV.', fileTooLarge: 'حجم المقطع أكبر من الحد المسموح (100 ميغابايت).',
+      uploadUnavailable: 'رفع المقاطع متاح في بيئة التطوير فقط.',
+      invalidVideo: 'يُقبل فقط مقطع فيديو بصيغة MP4 أو WebM أو MOV.', fileTooLarge: 'حجم المقطع أكبر من الحد المسموح (90 ميغابايت).',
       items: [
         { id: 'cpp', title: 'كورس C++ للمبتدئين', description: 'أساسيات لغة C++ من الصفر: المتغيرات، الشروط، الحلقات، وأول البرامج.' },
         { id: 'javascript', title: 'كورس جافاسكربت للمبتدئين', description: 'مدخل عملي إلى جافاسكربت لفهم الصفحة التفاعلية وكتابة أول السكربتات.' },
@@ -124,10 +124,10 @@ const translations = {
     },
     courses: {
       title: 'Courses', empty: 'No courses currently', open: 'Open course', back: 'Back to courses', loading: 'Loading learning content',
-      upload: 'Upload lessons', uploading: 'Uploading...', uploadKey: 'Upload key', uploadKeyPlaceholder: 'Enter the upload key',
+      upload: 'Upload lessons', uploading: 'Uploading...',
       uploadSuccess: 'The lesson was uploaded.', uploadFailed: 'The lesson could not be uploaded. Please try again.',
-      uploadUnauthorized: 'The upload key is incorrect.', uploadUnavailable: 'Uploads are not enabled yet. Add COURSE_UPLOAD_KEY in the hosting settings.',
-      invalidVideo: 'Only an MP4, WebM, or MOV video is accepted.', fileTooLarge: 'The video is larger than the 100 MB limit.',
+      uploadUnavailable: 'Uploading lessons is only available in development.',
+      invalidVideo: 'Only an MP4, WebM, or MOV video is accepted.', fileTooLarge: 'The video is larger than the 90 MB limit.',
       items: [
         { id: 'cpp', title: 'C++ for Beginners', description: 'C++ from the ground up: variables, conditions, loops, and your first programs.' },
         { id: 'javascript', title: 'JavaScript for Beginners', description: 'A practical introduction to JavaScript for interactive pages and your first scripts.' },

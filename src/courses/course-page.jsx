@@ -5,7 +5,6 @@ import { useLanguage } from '../i18n/language-context.jsx'
 import { scrollReveal, scrollViewport } from '../components/animations/scroll-reveal.jsx'
 
 const uploadErrorText = {
-  unauthorized: 'uploadUnauthorized',
   'upload-unavailable': 'uploadUnavailable',
   'invalid-video': 'invalidVideo',
   'file-too-large': 'fileTooLarge',
@@ -16,7 +15,6 @@ function CoursePage({ courseId }) {
   const course = t.courses.items.find((item) => item.id === courseId)
   const isDevelopment = import.meta.env.DEV
   const [lessons, setLessons] = useState([])
-  const [uploadKey, setUploadKey] = useState(() => sessionStorage.getItem('course-upload-key') || '')
   const [isUploading, setIsUploading] = useState(false)
   const [status, setStatus] = useState('')
 
@@ -42,7 +40,6 @@ function CoursePage({ courseId }) {
     const files = [...event.target.video.files]
     if (!files.length) return
 
-    sessionStorage.setItem('course-upload-key', uploadKey)
     setIsUploading(true)
     setStatus('')
 
@@ -50,11 +47,7 @@ function CoursePage({ courseId }) {
       for (const file of files) {
         const body = new FormData()
         body.append('video', file)
-        const response = await fetch(`/api/courses/${courseId}/lessons`, {
-          method: 'POST',
-          headers: { 'x-upload-key': uploadKey },
-          body,
-        })
+        const response = await fetch(`/api/courses/${courseId}/lessons`, { method: 'POST', body })
         const payload = await response.json().catch(() => ({}))
         if (!response.ok) {
           const messageKey = uploadErrorText[payload.error] || 'uploadFailed'
@@ -88,9 +81,7 @@ function CoursePage({ courseId }) {
       </div>}
 
       {isDevelopment && <form onSubmit={handleUpload} className="mt-8 max-w-xl rounded-2xl border border-border bg-card p-6 shadow">
-        <label htmlFor="course-upload-key" className="text-sm font-medium text-text-heading">{t.courses.uploadKey}</label>
-        <input id="course-upload-key" type="password" value={uploadKey} onChange={(event) => setUploadKey(event.target.value)} placeholder={t.courses.uploadKeyPlaceholder} autoComplete="off" className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2 text-text-heading outline-none focus:border-primary" />
-        <input name="video" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" multiple className="mt-4 block w-full text-sm text-text-body file:me-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white" />
+        <input name="video" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" multiple className="block w-full text-sm text-text-body file:me-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white" />
         <button type="submit" disabled={isUploading} className="mt-4 rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-60">{isUploading ? t.courses.uploading : t.courses.upload}</button>
         {status && <p className="mt-3 text-sm text-text-body">{status}</p>}
       </form>}
