@@ -321,6 +321,24 @@ app.post('/api/courses/:courseId/lessons', (req, res) => {
   })
 })
 
+app.delete('/api/courses/:courseId/lessons/:lessonId', (req, res) => {
+  if (isProduction) return res.status(403).json({ error: 'upload-unavailable' })
+  if (!COURSE_IDS.includes(req.params.courseId)) return res.status(404).json({ error: 'unknown-course' })
+
+  const lessons = readLessons(req.params.courseId)
+  const lesson = lessons.find((item) => item.id === req.params.lessonId)
+  if (!lesson) return res.status(404).json({ error: 'unknown-lesson' })
+
+  try {
+    writeLessons(req.params.courseId, lessons.filter((item) => item.id !== lesson.id))
+    fs.rmSync(path.join(uploadsRoot, req.params.courseId, path.basename(lesson.url)), { force: true })
+    return res.json({ success: true })
+  } catch (error) {
+    console.error('Error deleting course lesson:', error)
+    return res.status(500).json({ error: 'delete-failed' })
+  }
+})
+
 app.get('*', (req, res) => res.sendFile(path.join(process.cwd(), 'dist', 'index.html')))
 console.log(arcjetClient ? 'Arcjet protection is enabled.' : 'Arcjet protection is disabled. Using basic rate limiting.')
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

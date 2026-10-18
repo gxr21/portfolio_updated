@@ -64,6 +64,19 @@ function CoursePage({ courseId }) {
     }
   }
 
+  const handleDelete = async (lesson) => {
+    if (!window.confirm(`${t.courses.deleteConfirm}\n${lesson.title}`)) return
+    setStatus('')
+    try {
+      const response = await fetch(`/api/courses/${courseId}/lessons/${lesson.id}`, { method: 'DELETE' })
+      if (!response.ok) throw new Error()
+      setLessons((current) => current.filter((item) => item.id !== lesson.id))
+      setStatus(t.courses.deleteSuccess)
+    } catch {
+      setStatus(t.courses.deleteFailed)
+    }
+  }
+
   if (!course) return null
 
   return <main className="min-h-screen bg-surface" dir={direction}>
@@ -75,7 +88,10 @@ function CoursePage({ courseId }) {
 
       {lessons.length > 0 && <div className="mt-8 grid grid-cols-1 gap-6">
         {lessons.map((lesson) => <article key={lesson.id} className="overflow-hidden rounded-2xl border border-border bg-card p-4 shadow">
-          <h2 className="mb-4 text-lg font-bold">{lesson.title}</h2>
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <h2 className="text-lg font-bold">{lesson.title}</h2>
+            {isDevelopment && <button type="button" onClick={() => handleDelete(lesson)} className="rounded-md border border-red-500 px-3 py-1.5 text-sm font-medium text-red-500 transition-colors hover:bg-red-500 hover:text-white">{t.courses.delete}</button>}
+          </div>
           <video controls controlsList={isDevelopment ? undefined : 'nodownload'} disablePictureInPicture={!isDevelopment} preload="metadata" src={lesson.url} onContextMenu={isDevelopment ? undefined : (event) => event.preventDefault()} className="aspect-video w-full rounded-xl bg-black" />
         </article>)}
       </div>}

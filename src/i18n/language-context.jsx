@@ -52,6 +52,7 @@ const translations = {
       title: 'الكورسات', empty: 'لا توجد كورسات حالية', open: 'فتح الكورس', back: 'العودة إلى الكورسات', loading: 'جارِ تحميل المحتوى التعليمي',
       upload: 'رفع المقاطع', uploading: 'جارِ الرفع...',
       uploadSuccess: 'تم رفع المقطع بنجاح.', uploadFailed: 'تعذر رفع المقطع. حاول مرة أخرى.',
+      delete: 'حذف', deleteConfirm: 'هل تريد حذف هذا المقطع؟', deleteSuccess: 'تم حذف المقطع.', deleteFailed: 'تعذر حذف المقطع.',
       uploadUnavailable: 'رفع المقاطع متاح في بيئة التطوير فقط.',
       invalidVideo: 'يُقبل فقط مقطع فيديو بصيغة MP4 أو WebM أو MOV.', fileTooLarge: 'حجم المقطع أكبر من الحد المسموح (90 ميغابايت).',
       items: [
@@ -126,6 +127,7 @@ const translations = {
       title: 'Courses', empty: 'No courses currently', open: 'Open course', back: 'Back to courses', loading: 'Loading learning content',
       upload: 'Upload lessons', uploading: 'Uploading...',
       uploadSuccess: 'The lesson was uploaded.', uploadFailed: 'The lesson could not be uploaded. Please try again.',
+      delete: 'Delete', deleteConfirm: 'Delete this lesson?', deleteSuccess: 'The lesson was deleted.', deleteFailed: 'The lesson could not be deleted.',
       uploadUnavailable: 'Uploading lessons is only available in development.',
       invalidVideo: 'Only an MP4, WebM, or MOV video is accepted.', fileTooLarge: 'The video is larger than the 90 MB limit.',
       items: [
