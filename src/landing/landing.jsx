@@ -9,7 +9,7 @@ import { cardReveal, scrollReveal, scrollViewport, staggerContainer } from '../c
 
 const certificates = [
   ['/certificate_microsoft_AI.jpg', '	Microsoft Certified: Azure Ai Fundamentals  – Microsoft Learn'],
-  ['/certifcate_microsoft_skill.jpg', 'Microsoft AI Skills Fest 2026 – Verified Digital Badge (Credly)'],
+  // ['/certifcate_microsoft_skill.jpg', 'Microsoft AI Skills Fest 2026 – Verified Digital Badge (Credly)'],
   ['/certificate4.jpg', 'HSE (Health, Safety & Environment) Certificate'],
   ['/certificate3.jpg', 'Telecommunications Certificate – Asiacell'],
   ['/certificate2.jpg', 'Artificial Intelligence Marathon – Southern Technical University'],
