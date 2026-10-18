@@ -49,7 +49,7 @@ const translations = {
       ],
     },
     courses: {
-      title: 'الكورسات', empty: 'لا توجد حاليا كورسات مرفوعة', open: 'فتح الكورس', back: 'العودة إلى الكورسات',
+      title: 'الكورسات', empty: 'لا توجد كورسات حالية', open: 'فتح الكورس', back: 'العودة إلى الكورسات',
       upload: 'رفع المقاطع', uploading: 'جارِ الرفع...', uploadKey: 'رمز الرفع', uploadKeyPlaceholder: 'أدخل رمز الرفع',
       uploadSuccess: 'تم رفع المقطع بنجاح.', uploadFailed: 'تعذر رفع المقطع. حاول مرة أخرى.',
       uploadUnauthorized: 'رمز الرفع غير صحيح.', uploadUnavailable: 'الرفع غير مفعّل حالياً. أضف COURSE_UPLOAD_KEY في إعدادات الاستضافة.',
@@ -61,8 +61,7 @@ const translations = {
       ],
     },
     experience: {
-      title: 'التجربة', intro: 'مواقع يمكن تصفحها وتجربتها مباشرة.', browse: 'تصفح الموقع', openSite: 'فتح في نافذة جديدة',
-      frameHint: 'إذا لم يظهر الموقع داخل الإطار، افتحه في نافذة جديدة.',
+      title: 'التجربة', intro: 'مواقع يمكن فتحها وتجربتها.', browse: 'فتح الموقع', openSite: 'فتح الموقع',
       items: [
         { id: 'academic-horizon', title: 'AcademicHorizon', description: 'منصة الأفق الأكاديمي، موقع تعليمي يمكن تصفحه وتجربته من هنا.', url: 'https://academic-horizon-frontend.onrender.com' },
       ],
@@ -123,7 +122,7 @@ const translations = {
       ],
     },
     courses: {
-      title: 'Courses', empty: 'No courses have been uploaded yet', open: 'Open course', back: 'Back to courses',
+      title: 'Courses', empty: 'No courses currently', open: 'Open course', back: 'Back to courses',
       upload: 'Upload lessons', uploading: 'Uploading...', uploadKey: 'Upload key', uploadKeyPlaceholder: 'Enter the upload key',
       uploadSuccess: 'The lesson was uploaded.', uploadFailed: 'The lesson could not be uploaded. Please try again.',
       uploadUnauthorized: 'The upload key is incorrect.', uploadUnavailable: 'Uploads are not enabled yet. Add COURSE_UPLOAD_KEY in the hosting settings.',
@@ -135,8 +134,7 @@ const translations = {
       ],
     },
     experience: {
-      title: 'Experience', intro: 'Websites you can browse and try directly.', browse: 'Browse the website', openSite: 'Open in a new window',
-      frameHint: 'If the website does not appear in the frame, open it in a new window.',
+      title: 'Experience', intro: 'Websites you can open and try.', browse: 'Open website', openSite: 'Open website',
       items: [
         { id: 'academic-horizon', title: 'AcademicHorizon', description: 'Academic Horizon, an educational website you can browse and try from here.', url: 'https://academic-horizon-frontend.onrender.com' },
       ],

@@ -15,8 +15,12 @@ function CoursePage({ courseId }) {
   const { direction, t } = useLanguage()
   const course = t.courses.items.find((item) => item.id === courseId)
   const [lessons, setLessons] = useState([])
-  const [isReady, setIsReady] = useState(false)
   const [uploadKey, setUploadKey] = useState(() => sessionStorage.getItem('course-upload-key') || '')
+  const [isOwner] = useState(() => {
+    const unlocked = localStorage.getItem('portfolio-course-owner') === '1' || new URLSearchParams(window.location.search).get('edit') === '1'
+    if (unlocked) localStorage.setItem('portfolio-course-owner', '1')
+    return unlocked
+  })
   const [isUploading, setIsUploading] = useState(false)
   const [status, setStatus] = useState('')
 
@@ -30,8 +34,6 @@ function CoursePage({ courseId }) {
         if (isMounted) setLessons(payload.lessons || [])
       } catch {
         if (isMounted) setLessons([])
-      } finally {
-        if (isMounted) setIsReady(true)
       }
     }
 
@@ -82,8 +84,6 @@ function CoursePage({ courseId }) {
       <h1 className="mt-4 text-3xl font-bold text-text-heading">{course.title}</h1>
       <p className="mt-4 max-w-2xl leading-8 text-text-body">{course.description}</p>
 
-      {isReady && lessons.length === 0 && <p className="mt-8 rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center text-xl font-bold text-text-heading">{t.courses.empty}</p>}
-
       {lessons.length > 0 && <div className="mt-8 grid grid-cols-1 gap-6">
         {lessons.map((lesson) => <article key={lesson.id} className="overflow-hidden rounded-2xl border border-border bg-card p-4 shadow">
           <h2 className="mb-4 text-lg font-bold">{lesson.title}</h2>
@@ -91,13 +91,13 @@ function CoursePage({ courseId }) {
         </article>)}
       </div>}
 
-      <form onSubmit={handleUpload} className="mt-8 max-w-xl rounded-2xl border border-border bg-card p-6 shadow">
+      {isOwner && <form onSubmit={handleUpload} className="mt-8 max-w-xl rounded-2xl border border-border bg-card p-6 shadow">
         <label htmlFor="course-upload-key" className="text-sm font-medium text-text-heading">{t.courses.uploadKey}</label>
         <input id="course-upload-key" type="password" value={uploadKey} onChange={(event) => setUploadKey(event.target.value)} placeholder={t.courses.uploadKeyPlaceholder} autoComplete="off" className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2 text-text-heading outline-none focus:border-primary" />
         <input name="video" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" multiple className="mt-4 block w-full text-sm text-text-body file:me-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white" />
         <button type="submit" disabled={isUploading} className="mt-4 rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-60">{isUploading ? t.courses.uploading : t.courses.upload}</button>
         {status && <p className="mt-3 text-sm text-text-body">{status}</p>}
-      </form>
+      </form>}
     </motion.section>
     <a href="/#home" className="fixed bottom-6 left-6 z-50 rounded-full bg-primary p-4 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-blue-700 hover:shadow-xl" aria-label={t.common.backHome} title={t.common.backHome}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">

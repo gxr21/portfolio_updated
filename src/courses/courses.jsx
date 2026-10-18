@@ -12,18 +12,24 @@ const courseIcons = {
 
 function CoursesPage() {
   const { direction, t } = useLanguage()
-  const [hasLessons, setHasLessons] = useState(false)
+  const [coursesWithLessons, setCoursesWithLessons] = useState({})
+  const [lessonsReady, setLessonsReady] = useState(false)
 
   useEffect(() => {
     let isMounted = true
 
     async function loadLessons() {
       try {
-        const responses = await Promise.all(t.courses.items.map((course) => fetch(`/api/courses/${course.id}/lessons`)))
-        const payloads = await Promise.all(responses.map((response) => (response.ok ? response.json() : { lessons: [] })))
-        if (isMounted) setHasLessons(payloads.some((payload) => payload.lessons?.length))
+        const responses = await Promise.all(t.courses.items.map(async (course) => {
+          const response = await fetch(`/api/courses/${course.id}/lessons`)
+          const payload = response.ok ? await response.json() : { lessons: [] }
+          return [course.id, Boolean(payload.lessons?.length)]
+        }))
+        if (isMounted) setCoursesWithLessons(Object.fromEntries(responses))
       } catch {
-        if (isMounted) setHasLessons(false)
+        if (isMounted) setCoursesWithLessons({})
+      } finally {
+        if (isMounted) setLessonsReady(true)
       }
     }
 
@@ -35,12 +41,12 @@ function CoursesPage() {
     <NavBar />
     <motion.section variants={scrollReveal} initial="hidden" whileInView="visible" viewport={scrollViewport} className="container mx-auto px-4 py-20">
       <h1 className="text-3xl font-bold text-text-heading">{t.courses.title}</h1>
-      {!hasLessons && <p className="mt-8 rounded-2xl border border-dashed border-border bg-card px-6 py-16 text-center text-xl font-bold text-text-heading">{t.courses.empty}</p>}
       <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={scrollViewport} className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
         {t.courses.items.map((course) => <motion.article variants={cardReveal} key={course.id} className="rounded-2xl border border-border bg-card p-6 shadow transition-shadow hover:shadow-lg">
           <img src={courseIcons[course.id]} alt="" className="h-14 w-14 object-contain" />
           <h2 className="mt-6 text-xl font-bold">{course.title}</h2>
           <p className="mt-4 leading-7 text-text-body">{course.description}</p>
+          {lessonsReady && !coursesWithLessons[course.id] && <p className="mt-4 font-bold text-text-heading">{t.courses.empty}</p>}
           <a href={`/courses/${course.id}`} className="mt-6 inline-block text-primary hover:underline">{t.courses.open}</a>
         </motion.article>)}
       </motion.div>

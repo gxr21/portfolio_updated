@@ -43,13 +43,13 @@ function App() {
       if (targetPath === path) {
         if (!targetUrl.hash) return
         event.preventDefault()
-        window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.hash}`)
+        window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`)
         setPendingHash(targetUrl.hash)
         return
       }
 
       event.preventDefault(); setNextPage(pageNames[targetPath]); setIsNavigating(true)
-      window.setTimeout(() => { window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.hash}`); setPath(targetPath); setPendingHash(targetUrl.hash); setIsNavigating(false) }, 550)
+      window.setTimeout(() => { window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`); setPath(targetPath); setPendingHash(targetUrl.hash); setIsNavigating(false) }, 550)
     }
     const handlePopState = () => {
       setPath(window.location.pathname.replace(/\/$/, '') || '/')
