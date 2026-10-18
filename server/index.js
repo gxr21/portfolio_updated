@@ -227,7 +227,7 @@ ${message.trim()}
 })
 
 const COURSE_IDS = ['cpp', 'javascript', 'python']
-const uploadsRoot = path.join(process.cwd(), 'uploads', 'courses')
+const uploadsRoot = path.join(process.cwd(), 'public', 'course-lessons')
 const videoUpload = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
@@ -257,8 +257,11 @@ function lessonsFile(courseId) {
 }
 
 function readLessons(courseId) {
+  const publishedFile = path.join(process.cwd(), 'dist', 'course-lessons', courseId, 'lessons.json')
+  const sourceFile = lessonsFile(courseId)
+  const file = process.env.NODE_ENV === 'production' && fs.existsSync(publishedFile) ? publishedFile : sourceFile
   try {
-    return JSON.parse(fs.readFileSync(lessonsFile(courseId), 'utf8'))
+    return JSON.parse(fs.readFileSync(file, 'utf8'))
   } catch {
     return []
   }
@@ -286,6 +289,7 @@ app.get('/api/courses/:courseId/lessons', (req, res) => {
 })
 
 app.post('/api/courses/:courseId/lessons', (req, res) => {
+  if (process.env.NODE_ENV === 'production') return res.status(403).json({ error: 'upload-unavailable' })
   if (!COURSE_IDS.includes(req.params.courseId)) return res.status(404).json({ error: 'unknown-course' })
   if (!process.env.COURSE_UPLOAD_KEY) return res.status(503).json({ error: 'upload-unavailable' })
   if (!isUploadAuthorized(req)) return res.status(401).json({ error: 'unauthorized' })
@@ -301,7 +305,7 @@ app.post('/api/courses/:courseId/lessons', (req, res) => {
     const lesson = {
       id: crypto.randomBytes(8).toString('hex'),
       title,
-      url: `/uploads/courses/${req.params.courseId}/${req.file.filename}`,
+      url: `/course-lessons/${req.params.courseId}/${req.file.filename}`,
       uploadedAt: new Date().toISOString(),
     }
 

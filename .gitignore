@@ -16,7 +16,7 @@ dist-ssr
 server/node_modules
 server/.env
 
-# Uploaded course videos
+# Local upload scratch files. Published lessons live in public/course-lessons.
 uploads
 
 # Editor directories and files

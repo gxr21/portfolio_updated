@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ali-jalal-portfolio-v2'
+const CACHE_NAME = 'ali-jalal-portfolio-v3'
 const APP_SHELL = ['/', '/site.webmanifest', '/favicon.svg']
 
 self.addEventListener('install', (event) => {
@@ -21,7 +21,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return
   const url = new URL(event.request.url)
   if (url.origin !== self.location.origin) return
-  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/uploads/')) return
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/uploads/') || url.pathname.startsWith('/course-lessons/')) return
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => (

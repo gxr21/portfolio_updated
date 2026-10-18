@@ -14,13 +14,9 @@ const uploadErrorText = {
 function CoursePage({ courseId }) {
   const { direction, t } = useLanguage()
   const course = t.courses.items.find((item) => item.id === courseId)
+  const isDevelopment = import.meta.env.DEV
   const [lessons, setLessons] = useState([])
   const [uploadKey, setUploadKey] = useState(() => sessionStorage.getItem('course-upload-key') || '')
-  const [isOwner] = useState(() => {
-    const unlocked = localStorage.getItem('portfolio-course-owner') === '1' || new URLSearchParams(window.location.search).get('edit') === '1'
-    if (unlocked) localStorage.setItem('portfolio-course-owner', '1')
-    return unlocked
-  })
   const [isUploading, setIsUploading] = useState(false)
   const [status, setStatus] = useState('')
 
@@ -87,11 +83,11 @@ function CoursePage({ courseId }) {
       {lessons.length > 0 && <div className="mt-8 grid grid-cols-1 gap-6">
         {lessons.map((lesson) => <article key={lesson.id} className="overflow-hidden rounded-2xl border border-border bg-card p-4 shadow">
           <h2 className="mb-4 text-lg font-bold">{lesson.title}</h2>
-          <video controls preload="metadata" src={lesson.url} className="aspect-video w-full rounded-xl bg-black" />
+          <video controls controlsList={isDevelopment ? undefined : 'nodownload'} disablePictureInPicture={!isDevelopment} preload="metadata" src={lesson.url} onContextMenu={isDevelopment ? undefined : (event) => event.preventDefault()} className="aspect-video w-full rounded-xl bg-black" />
         </article>)}
       </div>}
 
-      {isOwner && <form onSubmit={handleUpload} className="mt-8 max-w-xl rounded-2xl border border-border bg-card p-6 shadow">
+      {isDevelopment && <form onSubmit={handleUpload} className="mt-8 max-w-xl rounded-2xl border border-border bg-card p-6 shadow">
         <label htmlFor="course-upload-key" className="text-sm font-medium text-text-heading">{t.courses.uploadKey}</label>
         <input id="course-upload-key" type="password" value={uploadKey} onChange={(event) => setUploadKey(event.target.value)} placeholder={t.courses.uploadKeyPlaceholder} autoComplete="off" className="mt-2 w-full rounded-md border border-border bg-surface px-3 py-2 text-text-heading outline-none focus:border-primary" />
         <input name="video" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" multiple className="mt-4 block w-full text-sm text-text-body file:me-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white" />
