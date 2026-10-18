@@ -58,11 +58,6 @@
   to { transform: translateX(-50%); }
 }
 
-@keyframes loading {
-  from { transform: translateX(-110%); }
-  to { transform: translateX(220%); }
-}
-
 .skills-marquee {
   animation: skills-marquee 26s linear infinite;
 }

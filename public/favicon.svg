@@ -1,5 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="A.J">
-  <rect width="64" height="64" rx="18" fill="#0145F2"/>
-  <rect x="4" y="4" width="56" height="56" rx="15" fill="none" stroke="#ffffff" stroke-opacity=".28" stroke-width="2"/>
-  <text x="32" y="39" fill="#ffffff" font-family="Arial, sans-serif" font-size="21" font-weight="700" text-anchor="middle">A.J</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AJ">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1B4D"/>
+      <stop offset="1" stop-color="#0145F2"/>
+    </linearGradient>
+    <linearGradient id="mark" gradientUnits="userSpaceOnUse" x1="10" y1="14" x2="54" y2="50">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#9CC3FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#bg)"/>
+  <rect x="2.5" y="2.5" width="59" height="59" rx="14" fill="none" stroke="#6EA8FF" stroke-opacity=".35" stroke-width="1.5"/>
+  <g fill="none" stroke="url(#mark)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 47 L24.5 17 L36 47" stroke-width="5.5"/>
+    <path d="M18.5 36.5 H30.5" stroke-width="5"/>
+    <path d="M50 17 V38.5 a8.5 8.5 0 0 1 -14.5 6" stroke-width="5.5"/>
+  </g>
+  <circle cx="50" cy="10.5" r="2.6" fill="#6EA8FF"/>
 </svg>

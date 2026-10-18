@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ali-jalal-portfolio-v3'
+const CACHE_NAME = 'ali-jalal-portfolio-v4'
 const APP_SHELL = ['/', '/site.webmanifest', '/favicon.svg']
 
 self.addEventListener('install', (event) => {

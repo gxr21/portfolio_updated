@@ -16,9 +16,10 @@ function App() {
   const [isWelcomeVisible, setIsWelcomeVisible] = useState(true)
   const [isNavigating, setIsNavigating] = useState(false)
   const [nextPage, setNextPage] = useState('')
+  const [nextPath, setNextPath] = useState('/')
   const [pendingHash, setPendingHash] = useState(() => window.location.hash)
 
-  useEffect(() => { const timer = window.setTimeout(() => setIsWelcomeVisible(false), 1500); return () => window.clearTimeout(timer) }, [])
+  useEffect(() => { const timer = window.setTimeout(() => setIsWelcomeVisible(false), 1800); return () => window.clearTimeout(timer) }, [])
 
   useEffect(() => {
     if (isWelcomeVisible || isNavigating || !pendingHash) return
@@ -48,8 +49,8 @@ function App() {
         return
       }
 
-      event.preventDefault(); setNextPage(pageNames[targetPath]); setIsNavigating(true)
-      window.setTimeout(() => { window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`); setPath(targetPath); setPendingHash(targetUrl.hash); setIsNavigating(false) }, 550)
+      event.preventDefault(); setNextPage(pageNames[targetPath]); setNextPath(targetPath); setIsNavigating(true)
+      window.setTimeout(() => { window.history.pushState({}, '', `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`); setPath(targetPath); setPendingHash(targetUrl.hash); setIsNavigating(false) }, 900)
     }
     const handlePopState = () => {
       setPath(window.location.pathname.replace(/\/$/, '') || '/')
@@ -63,7 +64,7 @@ function App() {
 
   if (isMaintenanceMode) return <Maintenance />
   if (isWelcomeVisible) return <LoadingScreen mode="welcome" />
-  if (isNavigating) return <LoadingScreen pageName={nextPage} />
+  if (isNavigating) return <LoadingScreen pageName={nextPage} path={nextPath} />
   const course = t.courses.items.find((item) => path === `/courses/${item.id}`)
 
   if (path === '/projects') {
